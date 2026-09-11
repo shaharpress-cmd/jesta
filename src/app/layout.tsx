@@ -11,10 +11,20 @@ const heebo = Heebo({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const defaultTitle = "ג׳סטה — עזרה בין שכנים באזור שלך";
+const defaultDescription =
+  "ג׳סטה מחברת בין שכנים לעזרה מהירה באזור שלך — דלק, הובלה קלה, קניות ועוד. הפלטפורמה מתווכת בלבד ואינה מבצעת את העזרה; האחריות על המשתמשים. בלי תשלומים.";
+
 export const metadata: Metadata = {
-  title: "ג׳סטה | Jesta — עזרה שכנית",
-  description:
-    "פלטפורמת עזרה הדדית בין שכנים. ג׳סטה מתווכת בלבד — האחריות על המשתמשים.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: defaultTitle,
+    template: "%s | ג׳סטה",
+  },
+  description: defaultDescription,
   applicationName: "ג׳סטה",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -25,6 +35,18 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icons/icon-192.png",
     apple: "/icons/icon-192.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "he_IL",
+    siteName: "ג׳סטה",
+    title: defaultTitle,
+    description: defaultDescription,
+  },
+  twitter: {
+    card: "summary",
+    title: defaultTitle,
+    description: defaultDescription,
   },
 };
 
