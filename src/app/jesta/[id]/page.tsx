@@ -154,6 +154,7 @@ export default function JestaDetailPage() {
         : "אני יכול/ה לעזור";
 
   return (
+    <>
     <PageFrame>
       <Header showBack backHref="/" showBell showMenu={false} />
 
@@ -301,9 +302,22 @@ export default function JestaDetailPage() {
         <SafetyBanner variant="footer" className="justify-center" />
       </div>
 
+      <ReportModal
+        open={reportOpen}
+        onClose={() => setReportOpen(false)}
+        onSubmit={(reason) => {
+          void submitReport({
+            jestaId: jesta.id,
+            reportedUserId: jesta.authorId,
+            reason,
+          });
+        }}
+      />
+    </PageFrame>
+
       {showHelpBar && (
-        <div className="fixed bottom-0 inset-x-0 z-[60] mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl">
-          <div className="border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[60]">
+          <div className="pointer-events-auto mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <button
                 type="button"
@@ -333,18 +347,6 @@ export default function JestaDetailPage() {
           </div>
         </div>
       )}
-
-      <ReportModal
-        open={reportOpen}
-        onClose={() => setReportOpen(false)}
-        onSubmit={(reason) => {
-          void submitReport({
-            jestaId: jesta.id,
-            reportedUserId: jesta.authorId,
-            reason,
-          });
-        }}
-      />
-    </PageFrame>
+    </>
   );
 }
