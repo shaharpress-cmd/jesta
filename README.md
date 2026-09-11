@@ -29,9 +29,10 @@ npm start
 
 - Next.js 14 App Router + TypeScript + Tailwind
 - In-memory seed data + `localStorage` persistence
-- Auth MVP: Google-first UI + `signInWithGoogle()` stub (`authProvider: 'google-stub'`)
-- PWA: `public/manifest.json` + `public/sw.js`
-- Optional later: Supabase — see `supabase/schema.sql`
+- Auth: Google-first UI; real OAuth when `NEXT_PUBLIC_SUPABASE_*` set, else `signInWithGoogle()` stub
+- Supabase helpers: `src/lib/supabase/{client,server}.ts` + `/auth/callback`
+- PWA: `public/manifest.json` (`start_url`/`scope` `/`) + `public/sw.js`
+- Schema: `supabase/schema.sql`
 
 ## Routes
 
@@ -50,34 +51,20 @@ npm start
 
 **Current (`/login`):**
 
-1. Primary CTA «המשך עם Google» → `signInWithGoogle()` in `src/lib/store.tsx`
-2. Creates/reuses user `u-google` with `authProvider: 'google-stub'`, sets as `currentUser`
+1. Primary CTA «המשך עם Google» → if Supabase env set: real OAuth via `/auth/callback`; else stub `signInWithGoogle()` in `src/lib/store.tsx`
+2. Stub path: creates/reuses user `u-google` with `authProvider: 'google-stub'`, then optional onboarding
 3. Optional onboarding: display name + accept תנאי שימוש ומדיניות פרטיות → «בואו נתחיל»
 4. Fallback: «המשך כדמו» or expand «מצב דמו» to pick seed users (`authProvider: 'demo'`)
 
-No Google OAuth client IDs required yet.
+Stub needs no Google OAuth client IDs; real OAuth needs Supabase + Google provider.
 
-### Later: wire real Supabase Google provider
+### Wire real Supabase Google (when project is ready)
 
-1. Supabase Dashboard → Authentication → Providers → enable **Google** (Client ID + Secret from Google Cloud Console).
-2. Add env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-3. Replace the stub body of `signInWithGoogle()` roughly with:
-
-```ts
-// Example — not active in MVP
-import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-await supabase.auth.signInWithOAuth({
-  provider: "google",
-  options: { redirectTo: `${window.location.origin}/login` },
-});
-// On auth callback: upsert public.profiles from session.user, set currentUser
-```
-
-4. Keep the same `User` shape in `src/lib/types.ts`; map `auth.users` → `profiles`.
+1. Copy `.env.example` → `.env.local` and fill `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (no invented keys).
+2. Supabase Dashboard → Authentication → Providers → enable **Google**.
+3. Add redirect URL: `{SITE_URL}/auth/callback` (and localhost for dev).
+4. `/login` already calls `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${origin}/auth/callback` } })` when env vars are present; otherwise keeps the stub.
+5. Keep the same `User` shape in `src/lib/types.ts`; map `auth.users` → `profiles`.
 
 ## Categories
 
@@ -87,8 +74,26 @@ await supabase.auth.signInWithOAuth({
 
 1. Push repo → import on [Vercel](https://vercel.com); framework Next.js.
 2. Create Supabase project → run `supabase/schema.sql`.
-3. Add env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-4. Replace `src/lib/store.tsx` mock auth with Supabase client/Auth; keep the same types in `src/lib/types.ts`.
+3. Add env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`.
+4. Finish wiring session → `currentUser` in `src/lib/store.tsx`; keep types in `src/lib/types.ts`.
+
+## Custom domain on Vercel · דומיין מותאם ב-Vercel
+
+**עברית**
+
+1. Vercel → Project → Settings → Domains → Add (למשל `jesta.app`).
+2. עדכנו DNS אצל רשם הדומיין לפי ההוראות של Vercel (A / CNAME).
+3. לאחר שהדומיין פעיל: הגדירו `NEXT_PUBLIC_SITE_URL=https://your-domain.com` ב-Vercel Env + Redeploy.
+4. ב-Supabase Auth → URL Configuration הוסיפו `https://your-domain.com/auth/callback`.
+5. ה-PWA משתמש ב-`start_url: "/"` ו-`scope: "/"` — עובד על כל דומיין בלי שינוי ב-manifest.
+
+**English**
+
+1. Vercel → Project → Settings → Domains → Add (e.g. `jesta.app`).
+2. Point DNS at your registrar as Vercel instructs (A / CNAME).
+3. Once live: set `NEXT_PUBLIC_SITE_URL=https://your-domain.com` in Vercel Env and redeploy.
+4. In Supabase Auth → URL Configuration add `https://your-domain.com/auth/callback`.
+5. PWA `start_url`/`scope` are relative (`/`) so the install works on any custom domain.
 
 ## Design
 

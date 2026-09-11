@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Avatar } from "@/components/Avatar";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { useStore } from "@/lib/store";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 type Step = "auth" | "onboarding";
 
@@ -54,13 +55,32 @@ export default function LoginPage() {
     [users]
   );
 
-  const handleGoogle = () => {
+  const handleGoogle = async () => {
     setBusy(true);
-    const user = signInWithGoogle();
-    setDisplayName(user.name === "משתמש Google" ? "" : user.name);
-    setAccepted(Boolean(user.acceptedTermsAt));
-    setStep("onboarding");
-    setBusy(false);
+    try {
+      if (isSupabaseConfigured()) {
+        const supabase = createClient();
+        const origin = window.location.origin;
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: `${origin}/auth/callback` },
+        });
+        if (error) {
+          console.error("Google OAuth error:", error.message);
+          setBusy(false);
+        }
+        // Browser navigates to Google; no local stub step.
+        return;
+      }
+
+      // Stub when Supabase env vars are not set yet
+      const user = signInWithGoogle();
+      setDisplayName(user.name === "משתמש Google" ? "" : user.name);
+      setAccepted(Boolean(user.acceptedTermsAt));
+      setStep("onboarding");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleContinueAsDemo = () => {
@@ -123,7 +143,9 @@ export default function LoginPage() {
               <p className="mt-5 max-w-xs text-[11px] leading-relaxed text-charcoal-light">
                 אופציונלי בהמשך — לא אימייל/סיסמה, לא SMS.
                 <br />
-                כרגע מדובר בסימולציה (בלי מפתחות OAuth).
+                {isSupabaseConfigured()
+                  ? "התחברות עם Google דרך Supabase."
+                  : "כרגע מדובר בסימולציה (בלי מפתחות OAuth)."}
               </p>
 
               <button

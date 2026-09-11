@@ -3,6 +3,7 @@
   "short_name": "ג'סטה",
   "description": "פלטפורמת עזרה הדדית בין שכנים. מתווכת בלבד.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#FDF8F5",
   "theme_color": "#E07A5F",
