@@ -14,23 +14,23 @@ const heebo = Heebo({
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-const defaultTitle = "ג׳סטה — עזרה בין שכנים באזור שלך";
+const defaultTitle = "Jesta — עזרה בין אנשים באזור שלך";
 const defaultDescription =
-  "ג׳סטה מחברת בין שכנים לעזרה מהירה באזור שלך — דלק, הובלה קלה, קניות ועוד. הפלטפורמה מתווכת בלבד ואינה מבצעת את העזרה; האחריות על המשתמשים. בלי תשלומים.";
+  "ג׳סטה מחברת בין מי שצריך עזרה למי שרוצה לתת — לפי מיקום באזור שלך. דלק, הובלה קלה, קניות ועוד. הפלטפורמה מתווכת בלבד ואינה מבצעת את העזרה; האחריות על המשתמשים.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: defaultTitle,
-    template: "%s | ג׳סטה",
+    template: "%s | Jesta",
   },
   description: defaultDescription,
-  applicationName: "ג׳סטה",
+  applicationName: "Jesta",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "ג׳סטה",
+    title: "Jesta",
   },
   icons: {
     icon: "/icons/icon-192.png",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "he_IL",
-    siteName: "ג׳סטה",
+    siteName: "Jesta",
     title: defaultTitle,
     description: defaultDescription,
   },
@@ -67,7 +67,7 @@ export default function RootLayout({
       <body className="font-heebo bg-cream-deep text-charcoal antialiased text-[15px] sm:text-base">
         <StoreProvider>
           <div className="app-shell relative mx-auto min-h-dvh w-full bg-cream sm:shadow-card">
-            <main className="pb-[calc(7rem+env(safe-area-inset-bottom))]">{children}</main>
+            <main className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-32">{children}</main>
             <BottomNav />
           </div>
           <ServiceWorkerRegister />

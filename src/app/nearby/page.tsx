@@ -82,7 +82,7 @@ export default function NearbyPage() {
               type="button"
               onClick={() => setTab(id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs transition-all",
+                "flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs transition-colors duration-200 min-h-11",
                 tab === id ? "pill-active" : "pill-inactive"
               )}
             >
@@ -115,7 +115,7 @@ export default function NearbyPage() {
 
 function Empty() {
   return (
-    <div className="card-soft p-8 text-center">
+    <div className="card-soft p-8 text-center md:col-span-2 xl:col-span-3">
       <p className="text-3xl mb-2">📍</p>
       <p className="font-medium">אין תוצאות בטווח</p>
       <p className="text-sm text-charcoal-muted mt-1">נסו להרחיב את הרדיוס</p>

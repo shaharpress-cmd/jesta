@@ -28,8 +28,8 @@ export function BottomNav() {
   if (hide) return null;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-5xl border-t border-charcoal/[0.05] bg-white/95 backdrop-blur-md shadow-nav pb-safe">
-      <div className="flex items-end justify-around px-1 sm:px-4 pt-1.5 pb-2.5 max-w-3xl mx-auto">
+    <nav className="app-bottom-nav fixed bottom-0 inset-x-0 z-50 mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:bottom-5 lg:max-w-lg lg:rounded-[1.75rem] lg:border lg:border-charcoal/[0.07] border-t border-charcoal/[0.05] bg-white/95 backdrop-blur-md shadow-nav lg:shadow-card pb-safe lg:pb-2">
+      <div className="flex h-[3.75rem] lg:h-16 items-end justify-around px-1 sm:px-4 lg:px-5 pt-1.5 pb-2 lg:items-center">
         {tabs.map((tab) => {
           const active =
             tab.href === "/"
@@ -42,12 +42,12 @@ export function BottomNav() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="relative -mt-6 flex flex-col items-center px-1 touch-manipulation"
+                className="relative -mt-5 lg:mt-0 flex flex-col items-center px-1 touch-manipulation"
               >
-                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-coral shadow-fab text-white ring-[5px] ring-cream">
-                  <Icon className="h-7 w-7" strokeWidth={2.5} />
+                <span className="flex h-14 w-14 lg:h-11 lg:w-11 items-center justify-center rounded-full bg-coral shadow-fab text-white ring-[5px] ring-cream lg:ring-0 lg:shadow-soft">
+                  <Icon className="h-7 w-7 lg:h-5 lg:w-5" strokeWidth={2.5} />
                 </span>
-                <span className="mt-1 text-[10px] sm:text-[11px] font-semibold text-coral">
+                <span className="mt-1 text-[10px] sm:text-[11px] font-semibold text-coral lg:hidden">
                   {tab.label}
                 </span>
               </Link>
@@ -59,7 +59,7 @@ export function BottomNav() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                "relative flex flex-1 flex-col items-center gap-0.5 py-1.5 min-h-12 text-[10px] sm:text-[11px] transition-colors touch-manipulation",
+                "relative flex flex-1 flex-col items-center gap-0.5 py-1.5 min-h-12 lg:min-h-0 text-[10px] sm:text-[11px] lg:text-xs transition-colors touch-manipulation",
                 active
                   ? "font-bold text-coral"
                   : "font-medium text-charcoal-muted"
@@ -67,7 +67,7 @@ export function BottomNav() {
             >
               <span className="relative">
                 <Icon
-                  className={cn("h-6 w-6", active && "stroke-[2.4]")}
+                  className={cn("h-6 w-6 lg:h-5 lg:w-5", active && "stroke-[2.4]")}
                   fill={active && tab.href === "/nearby" ? "currentColor" : "none"}
                 />
                 {tab.href === "/messages" && unread > 0 && (

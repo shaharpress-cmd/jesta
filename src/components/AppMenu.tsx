@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { Wordmark } from "@/components/Wordmark";
 
 const LINKS = [
   { href: "/about", label: "מה זה ג׳סטה?", icon: Info },
@@ -95,11 +96,11 @@ export function AppMenu({
 
         <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 md:pt-6">
           <div className="min-w-0">
-            <p id={titleId} className="text-xl font-black tracking-tight text-coral">
-              ג׳סטה
+            <p id={titleId} className="leading-none">
+              <Wordmark size="sm" />
             </p>
-            <p className="text-[12px] font-medium text-charcoal-muted">
-              עזרה שכנית, בלי תשלומים
+            <p className="mt-1 text-[12px] font-medium text-charcoal-muted">
+              עזרה בין אנשים לפי מיקום
             </p>
           </div>
           <button

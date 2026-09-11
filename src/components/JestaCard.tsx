@@ -18,7 +18,7 @@ export function JestaCard({
   return (
     <Link
       href={`/jesta/${jesta.id}`}
-      className="block card-soft p-5 transition hover:border-coral/20 active:scale-[0.995]"
+      className="block card-soft card-lift p-5 anim-enter"
     >
       <div className="mb-2.5">
         <span

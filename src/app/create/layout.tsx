@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const title = "פרסום ג׳סטה";
 const description =
-  "פרסמו בקשת עזרה או הצעה לשכנים באזור שלכם. ג׳סטה מתווכת בלבד ואינה מבטיחה תוצאה — בלי תשלומים.";
+  "פרסמו בקשת עזרה או הצעה לאנשים באזור שלכם. ג׳סטה מתווכת בלבד ואינה מבטיחה תוצאה.";
 
 export const metadata: Metadata = {
   title,

@@ -43,11 +43,11 @@ export default function HomePage() {
         }}
       />
 
-      <div className="page-pad space-y-4">
+      <div className="page-pad flex flex-col gap-4">
         <GuestIntroCard />
 
         {(searchOpen || query) && (
-          <div className="relative max-w-xl">
+          <div className="relative max-w-xl anim-enter">
             <Search className="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal-light" />
             <input
               ref={searchRef}
@@ -72,7 +72,7 @@ export default function HomePage() {
 
         <div className="feed-grid pt-1">
           {list.length === 0 ? (
-            <div className="card-soft p-8 text-center sm:col-span-2">
+            <div className="card-soft p-8 text-center md:col-span-2 xl:col-span-3">
               <p className="text-4xl mb-2">🤝</p>
               <p className="font-medium text-charcoal">אין ג׳סטות בטווח הזה</p>
               <p className="text-sm text-charcoal-muted mt-1">
@@ -92,7 +92,7 @@ export default function HomePage() {
             className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm touch-manipulation"
           >
             טיפים
-            <span className="text-charcoal-light font-medium">· מדריכים לשכנים</span>
+            <span className="text-charcoal-light font-medium">· מדריכים קצרים</span>
           </Link>
         </div>
 

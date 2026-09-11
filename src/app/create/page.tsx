@@ -213,7 +213,7 @@ function CreateForm() {
         </button>
 
         <p className="text-center text-xs text-charcoal-muted px-4 leading-relaxed">
-          בפרסום אתם מאשרים שזו עזרה לא-מקצועית ללא תשלום. ג׳סטה מתווכת בלבד.
+          בפרסום אתם מאשרים שזו עזרה לא-מקצועית. ג׳סטה מתווכת בלבד.
         </p>
       </div>
     </div>

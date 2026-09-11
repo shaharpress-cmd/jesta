@@ -4,6 +4,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Bell, Menu, ArrowRight, Search } from "lucide-react";
 import { AppMenu } from "@/components/AppMenu";
+import { Wordmark } from "@/components/Wordmark";
 
 export function Header({
   title,
@@ -23,7 +24,7 @@ export function Header({
   location?: string;
   showMenu?: boolean;
   showBell?: boolean;
-  /** Home: centered coral logo, search + light menu — calmer chrome */
+  /** Home: centered Latin wordmark + Hebrew wink, search + menu */
   variant?: "default" | "home";
   onSearchClick?: () => void;
 }) {
@@ -37,8 +38,8 @@ export function Header({
       onClick={openMenu}
       className={
         compact
-          ? "flex h-8 w-8 items-center justify-center rounded-full text-charcoal-muted/70 hover:bg-white/70 hover:text-charcoal touch-manipulation"
-          : "flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted/80 hover:bg-white/70 transition touch-manipulation"
+          ? "flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted/70 hover:bg-white/70 hover:text-charcoal touch-manipulation"
+          : "flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted/80 hover:bg-white/70 transition-colors touch-manipulation"
       }
       aria-label="תפריט"
       aria-expanded={menuOpen}
@@ -52,12 +53,12 @@ export function Header({
 
   if (variant === "home") {
     chrome = (
-      <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 sm:px-6 pt-[max(0.875rem,env(safe-area-inset-top))] pb-2.5">
-        <div className="relative flex items-center justify-between min-h-10 max-w-6xl mx-auto w-full">
+      <header className="app-header sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 sm:px-6 lg:px-8">
+        <div className="relative flex h-14 items-center justify-between max-w-6xl mx-auto w-full">
           <button
             type="button"
             onClick={onSearchClick}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted hover:bg-white/70 transition touch-manipulation"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted hover:bg-white/70 transition-colors touch-manipulation"
             aria-label="חיפוש"
           >
             <Search className="h-5 w-5" strokeWidth={2} />
@@ -65,15 +66,9 @@ export function Header({
 
           <Link
             href="/"
-            className="absolute inset-x-14 flex flex-col items-center pointer-events-auto"
+            className="absolute inset-x-14 flex flex-col items-center justify-center pointer-events-auto"
           >
-            <span className="relative text-[1.7rem] sm:text-[1.85rem] font-black tracking-tight text-coral leading-none">
-              ג׳סטה
-              <span
-                aria-hidden
-                className="absolute -top-0.5 end-[0.12em] h-1.5 w-1.5 rounded-full bg-coral/70"
-              />
-            </span>
+            <Wordmark size="md" bilingual bilingualPlacement="beside" />
             {location && (
               <span className="mt-0.5 text-[11px] sm:text-xs font-medium text-charcoal-muted truncate max-w-full">
                 {location}
@@ -92,8 +87,8 @@ export function Header({
     );
   } else if (title) {
     chrome = (
-      <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 sm:px-6 pt-[max(0.875rem,env(safe-area-inset-top))] pb-2.5">
-        <div className="relative flex items-center justify-between gap-2 min-h-9 max-w-6xl mx-auto w-full">
+      <header className="app-header sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 sm:px-6 lg:px-8">
+        <div className="relative flex h-14 items-center justify-between gap-2 max-w-6xl mx-auto w-full">
           <div className="flex items-center gap-1 min-w-[40px]">
             {showBack ? (
               <Link
@@ -104,7 +99,7 @@ export function Header({
                 <ArrowRight className="h-5 w-5 text-charcoal" />
               </Link>
             ) : (
-              <span className="w-9" />
+              <span className="w-10" />
             )}
           </div>
 
@@ -124,15 +119,15 @@ export function Header({
               </button>
             )}
             {showMenu && menuButton(true)}
-            {!showBell && !showMenu && <span className="w-9" />}
+            {!showBell && !showMenu && <span className="w-10" />}
           </div>
         </div>
       </header>
     );
   } else {
     chrome = (
-      <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 sm:px-6 pt-[max(0.875rem,env(safe-area-inset-top))] pb-2.5">
-        <div className="flex items-center justify-between gap-2 max-w-6xl mx-auto w-full">
+      <header className="app-header sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 sm:px-6 lg:px-8">
+        <div className="flex h-14 items-center justify-between gap-2 max-w-6xl mx-auto w-full">
           <div className="flex items-center gap-2 min-w-0 flex-1">
             {showBack && (
               <Link
@@ -145,13 +140,7 @@ export function Header({
             )}
 
             <Link href="/" className="inline-flex flex-col items-start min-w-0">
-              <span className="relative text-[1.65rem] sm:text-[1.8rem] font-black tracking-tight text-coral leading-none">
-                ג׳סטה
-                <span
-                  aria-hidden
-                  className="absolute -top-0.5 end-[0.15em] h-1.5 w-1.5 rounded-full bg-coral/70"
-                />
-              </span>
+              <Wordmark size="md" />
               {subtitle && (
                 <p className="text-[11px] sm:text-xs text-charcoal-muted mt-0.5 font-medium">
                   {subtitle}

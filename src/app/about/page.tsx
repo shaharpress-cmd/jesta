@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { SafetyBanner } from "@/components/SafetyBanner";
+import { Wordmark } from "@/components/Wordmark";
 import { SAFETY } from "@/lib/categories";
 
 const SITE =
@@ -17,14 +18,14 @@ const SITE =
 const ABOUT_URL = `${SITE}/about`;
 
 export const metadata: Metadata = {
-  title: "מה זה ג׳סטה? עזרה בין שכנים באזור שלך",
+  title: "מה זה ג׳סטה? עזרה בין אנשים באזור שלך",
   description:
-    "ג׳סטה מחברת בין שכנים לעזרה מהירה לפי מיקום — לבקש או לעזור, בלי תשלומים בפלטפורמה. מתווכת בלבד, עם טיפי בטיחות בסיסיים.",
+    "ג׳סטה מחברת בין מי שצריך עזרה למי שרוצה לתת — לפי מיקום. מתווכת בלבד, עם טיפי בטיחות בסיסיים.",
   alternates: { canonical: ABOUT_URL },
   openGraph: {
-    title: "מה זה ג׳סטה? עזרה בין שכנים באזור שלך",
+    title: "מה זה ג׳סטה? עזרה בין אנשים באזור שלך",
     description:
-      "עזרה שכנית לפי מיקום — בקשו או הציעו עזרה בחינם. ג׳סטה מתווכת בלבד ואינה מבצעת את העזרה.",
+      "עזרה בין אנשים לפי מיקום — בקשו או הציעו ג׳סטה באזור שלכם. ג׳סטה מתווכת בלבד ואינה מבצעת את העזרה.",
     url: ABOUT_URL,
     locale: "he_IL",
     type: "website",
@@ -32,8 +33,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: "מה זה ג׳סטה?",
-    description:
-      "עזרה בין שכנים לפי מיקום, בלי תשלומים. מתווכת בלבד.",
+    description: "עזרה בין אנשים לפי מיקום. מתווכת בלבד.",
   },
   robots: { index: true, follow: true },
 };
@@ -47,12 +47,12 @@ const STEPS = [
   {
     icon: HandHelping,
     title: "מבקשים או עוזרים",
-    body: "מפרסמים ג׳סטה קצרה, או מציעים עזרה לשכן. התיאום ממשיך בצ׳אט.",
+    body: "מפרסמים ג׳סטה קצרה, או מציעים עזרה למי שלידכם. התיאום ממשיך בצ׳אט.",
   },
   {
     icon: MessageCircle,
     title: "מתאמים בשקט",
-    body: "בלי תשלומים באפליקציה. שומרים על כבוד, ומעדיפים מקום ציבורי במפגש ראשון.",
+    body: "שומרים על כבוד, ומעדיפים מקום ציבורי במפגש ראשון.",
   },
 ];
 
@@ -62,26 +62,26 @@ export default function AboutPage() {
       <Header title="מה זה ג׳סטה?" showBack backHref="/" showBell={false} showMenu />
 
       <article className="page-pad space-y-6 pb-10 max-w-3xl mx-auto">
-        <header className="space-y-3">
+        <header className="space-y-3 anim-enter">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-coral-soft px-3 py-1 text-xs font-semibold text-coral">
             <Sparkles className="h-3.5 w-3.5" />
-            עזרה שכנית · PWA
+            עזרה בין אנשים · לפי מיקום
           </p>
+          <Wordmark size="lg" bilingual bilingualPlacement="beside" />
           <h1 className="text-fluid-xl font-black text-charcoal leading-snug">
-            ג׳סטה — עזרה בין שכנים באזור שלך
+            מי שצריך ג׳סטה, ומי שרוצה לתת
           </h1>
           <p className="text-sm sm:text-base text-charcoal-muted leading-relaxed">
-            לפעמים צריך יד קצרה: דלק בדרך, הרמת מקרר, קניות לשכן. ג׳סטה מחברת
-            אנשים קרובים לפי מיקום — בחינם, בלי תשלומים בפלטפורמה, וניתן להתקין
-            כאפליקציה (PWA).
+            לפעמים צריך יד קצרה: דלק בדרך, הרמת מקרר, קניות באזור. ג׳סטה מחברת
+            בין אנשים לפי מיקום — וניתן להתקין כאפליקציה (PWA).
           </p>
         </header>
 
-        <section className="card-soft p-5 space-y-2">
+        <section className="card-soft p-5 space-y-2 anim-enter" style={{ animationDelay: "60ms" }}>
           <h2 className="text-lg font-bold text-charcoal">למה?</h2>
           <p className="text-sm text-charcoal-muted leading-relaxed">
-            כי שכנים יכולים לעזור זה לזה במהירות, בלי סיבוך ובלי כסף באפליקציה.
-            המטרה היא חיבור שקט — לא שוק שירותים ולא תחליף לחירום.
+            כי אנשים יכולים לעזור זה לזה במהירות, בלי סיבוך. המטרה היא חיבור
+            שקט — לא שוק שירותים ולא תחליף לחירום.
           </p>
         </section>
 
@@ -89,7 +89,11 @@ export default function AboutPage() {
           <h2 className="text-lg font-bold text-charcoal">איך זה עובד</h2>
           <ol className="grid gap-3 sm:grid-cols-3">
             {STEPS.map(({ icon: Icon, title, body }, i) => (
-              <li key={title} className="card-soft p-4 space-y-2.5 h-full">
+              <li
+                key={title}
+                className="card-soft p-4 space-y-2.5 h-full anim-enter"
+                style={{ animationDelay: `${100 + i * 60}ms` }}
+              >
                 <div className="flex items-center gap-2.5">
                   <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-coral-soft text-coral font-bold text-sm">
                     {i + 1}
@@ -130,8 +134,9 @@ export default function AboutPage() {
         <section className="card-soft p-5 space-y-2">
           <h2 className="text-lg font-bold text-charcoal">מתווכת בלבד</h2>
           <p className="text-sm text-charcoal-muted leading-relaxed">
-            {SAFETY.intermediary}. אין תשלומים בפלטפורמה — כל סיכום כספי (אם בכלל)
-            הוא בין המשתמשים בלבד. ג׳סטה אינה מבצעת את העזרה ואינה אחראית לפגישות.
+            {SAFETY.intermediary}. ג׳סטה אינה מבצעת את העזרה ואינה אחראית לפגישות.
+            בשלב הזה אין תשלומים בתוך האפליקציה — כל סיכום (אם בכלל) הוא בין
+            המשתמשים בלבד.
           </p>
         </section>
 

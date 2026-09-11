@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "jesta-intro-dismissed";
 
 export function GuestIntroCard() {
   const { isLoggedIn, cloudReady } = useStore();
   const [visible, setVisible] = useState(false);
+  const [shown, setShown] = useState(false);
 
   useEffect(() => {
     if (!cloudReady) return;
@@ -28,6 +30,15 @@ export function GuestIntroCard() {
     setVisible(true);
   }, [isLoggedIn, cloudReady]);
 
+  useEffect(() => {
+    if (visible) {
+      setShown(true);
+      return;
+    }
+    const t = window.setTimeout(() => setShown(false), 300);
+    return () => window.clearTimeout(t);
+  }, [visible]);
+
   const dismiss = () => {
     setVisible(false);
     try {
@@ -37,42 +48,56 @@ export function GuestIntroCard() {
     }
   };
 
-  if (!visible) return null;
+  if (!shown) return null;
 
   return (
-    <section
-      className="card-soft relative overflow-hidden p-4 sm:p-5"
-      aria-label="היכרות עם ג׳סטה"
+    <div
+      className={cn(
+        "grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none",
+        visible
+          ? "grid-rows-[1fr] opacity-100"
+          : "grid-rows-[0fr] opacity-0 pointer-events-none"
+      )}
     >
-      <button
-        type="button"
-        onClick={dismiss}
-        className="absolute top-3 end-3 flex h-10 w-10 items-center justify-center rounded-full text-charcoal-light hover:bg-cream-deep hover:text-charcoal transition touch-manipulation"
-        aria-label="סגור היכרות"
-      >
-        <X className="h-4 w-4" />
-      </button>
+      <div className="overflow-hidden">
+        <section
+          className="card-soft relative overflow-hidden p-4 sm:p-5 anim-enter"
+          aria-label="היכרות עם ג׳סטה"
+          aria-hidden={!visible}
+        >
+          <button
+            type="button"
+            onClick={dismiss}
+            className="absolute top-3 end-3 flex h-10 w-10 items-center justify-center rounded-full text-charcoal-light hover:bg-cream-deep hover:text-charcoal transition-colors touch-manipulation"
+            aria-label="סגור היכרות"
+            tabIndex={visible ? 0 : -1}
+          >
+            <X className="h-4 w-4" />
+          </button>
 
-      <div className="ps-8 space-y-3">
-        <p className="text-[15px] sm:text-base font-semibold text-charcoal leading-relaxed">
-          ג׳סטה מחברת שכנים לעזרה לפי מיקום — בחינם, בלי תשלומים באפליקציה, וניתן
-          להתקין כ־PWA.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/about#how"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-soft touch-manipulation"
-          >
-            איך זה עובד
-          </Link>
-          <Link
-            href="/login"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-coral/35 bg-white px-4 py-2 text-sm font-bold text-coral touch-manipulation"
-          >
-            התחברות
-          </Link>
-        </div>
+          <div className="ps-8 space-y-3">
+            <p className="text-[15px] sm:text-base font-semibold text-charcoal leading-relaxed">
+              מי שצריך ג׳סטה ומי שרוצה לתת — עזרה בין אנשים לפי מיקום, באזור שלך.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/about#how"
+                tabIndex={visible ? 0 : -1}
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-soft touch-manipulation"
+              >
+                איך זה עובד
+              </Link>
+              <Link
+                href="/login"
+                tabIndex={visible ? 0 : -1}
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-coral/35 bg-white px-4 py-2 text-sm font-bold text-coral touch-manipulation"
+              >
+                התחברות
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }

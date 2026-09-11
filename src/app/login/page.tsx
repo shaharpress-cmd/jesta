@@ -8,6 +8,7 @@ import { Avatar } from "@/components/Avatar";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { useStore } from "@/lib/store";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { Wordmark } from "@/components/Wordmark";
 import {
   isDefaultDisplayName,
   needsProfileOnboarding,
@@ -198,11 +199,11 @@ function LoginInner() {
                   🤝
                 </span>
               </div>
-              <h1 className="text-3xl font-black text-coral tracking-tight">
-                ג׳סטה
+              <h1 className="leading-none">
+                <Wordmark size="lg" bilingual />
               </h1>
-              <p className="mt-3 max-w-[16rem] text-sm leading-relaxed text-charcoal-muted">
-                עזרה שכנית, בלי תשלומים.
+              <p className="mt-3 max-w-[17rem] text-sm leading-relaxed text-charcoal-muted">
+                עזרה בין אנשים לפי מיקום.
                 <br />
                 התחברו בשקט והמשיכו.
               </p>

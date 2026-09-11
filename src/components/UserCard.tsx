@@ -10,7 +10,7 @@ export function UserCard({ user }: { user: User }) {
   return (
     <Link
       href={`/profile?u=${user.id}`}
-      className="flex items-center gap-3.5 card-soft p-4 transition hover:border-coral/15"
+      className="flex items-center gap-3.5 card-soft card-lift p-4 anim-enter"
     >
       <Avatar
         src={user.avatar}
