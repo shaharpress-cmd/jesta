@@ -5,12 +5,19 @@ import { TipsDisclaimer } from "@/components/TipsDisclaimer";
 import { CATEGORY_MAP } from "@/lib/categories";
 import { TIP_PAGES, TIPS_HUB, tipHref } from "@/lib/tips";
 
+const TIPS_SITE =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  "https://jesta-pink.vercel.app";
+const TIPS_HUB_URL = `${TIPS_SITE}/טיפים`;
+
 export const metadata: Metadata = {
   title: TIPS_HUB.metaTitle,
   description: TIPS_HUB.metaDescription,
+  alternates: { canonical: TIPS_HUB_URL },
   openGraph: {
     title: TIPS_HUB.metaTitle,
     description: TIPS_HUB.metaDescription,
+    url: TIPS_HUB_URL,
     locale: "he_IL",
   },
   twitter: {

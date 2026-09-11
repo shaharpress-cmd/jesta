@@ -21,12 +21,18 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: Props): Metadata {
   const page = TIP_BY_SLUG[decodeURIComponent(params.slug)];
   if (!page) return { title: "טיפים" };
+  const site =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+    "https://jesta-pink.vercel.app";
+  const url = `${site}/טיפים/${page.slug}`;
   return {
     title: page.metaTitle,
     description: page.metaDescription,
+    alternates: { canonical: url },
     openGraph: {
       title: page.metaTitle,
       description: page.metaDescription,
+      url,
       locale: "he_IL",
     },
     twitter: {
