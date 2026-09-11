@@ -9,6 +9,7 @@ import { JestaCard } from "@/components/JestaCard";
 import { RadiusFilter } from "@/components/RadiusFilter";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { GuestIntroCard } from "@/components/GuestIntroCard";
+import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import type { CategoryId } from "@/lib/types";
 
@@ -33,7 +34,7 @@ export default function HomePage() {
   }, [filteredJestas, category, query]);
 
   return (
-    <div>
+    <PageFrame>
       <Header
         variant="home"
         location='תל אביב · 2 ק״מ'
@@ -57,28 +58,26 @@ export default function HomePage() {
                 if (!query.trim()) setSearchOpen(false);
               }}
               placeholder="חפש ג׳סטה..."
-              className="input-soft w-full py-3.5 ps-4 pe-11"
+              className="input-soft w-full py-3.5 ps-4 pe-11 min-h-12"
             />
           </div>
         )}
 
         <RadiusFilter value={radius} onChange={setRadius} />
 
-        <CategoryPills
-          selected={category}
-          onSelect={setCategory}
-          compact
-        />
+        <CategoryPills selected={category} onSelect={setCategory} compact />
 
         <div className="feed-grid pt-1">
           {list.length === 0 ? (
-            <div className="card-soft p-8 text-center md:col-span-2 xl:col-span-3">
-              <p className="text-4xl mb-2">🤝</p>
-              <p className="font-medium text-charcoal">אין ג׳סטות בטווח הזה</p>
-              <p className="text-sm text-charcoal-muted mt-1">
-                נסו להרחיב את הרדיוס או לשנות קטגוריה
-              </p>
-            </div>
+            <EmptyState
+              emoji="🤝"
+              title="אין ג׳סטות בטווח הזה"
+              body="נסו להרחיב את הרדיוס או לשנות קטגוריה — או פרסמו את הראשונה."
+              primaryHref="/create"
+              primaryLabel="פרסמו ג׳סטה"
+              secondaryHref="/nearby"
+              secondaryLabel="לידך"
+            />
           ) : (
             list.map((j) => (
               <JestaCard key={j.id} jesta={j} author={getUser(j.authorId)} />
@@ -89,7 +88,7 @@ export default function HomePage() {
         <div className="flex justify-center pt-2">
           <Link
             href="/טיפים"
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm touch-manipulation"
+            className="btn-pressable inline-flex min-h-11 items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm"
           >
             טיפים
             <span className="text-charcoal-light font-medium">· מדריכים קצרים</span>
@@ -98,6 +97,6 @@ export default function HomePage() {
 
         <SafetyBanner variant="footer" className="justify-center px-2 py-4" />
       </div>
-    </div>
+    </PageFrame>
   );
 }

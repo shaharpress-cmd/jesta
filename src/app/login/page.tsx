@@ -160,11 +160,11 @@ function LoginInner() {
         <Header
           title="כמעט שם"
           showBack
-          backHref="/profile"
+          backHref="/"
           showBell={false}
           showMenu={false}
         />
-        <div className="flex-1 px-5 pb-8 flex flex-col items-center justify-center text-center gap-3">
+        <div className="flex-1 page-pad pb-8 flex flex-col items-center justify-center text-center gap-3 anim-page">
           <div
             className="h-10 w-10 rounded-full border-2 border-coral/30 border-t-coral animate-spin"
             aria-hidden
@@ -185,12 +185,12 @@ function LoginInner() {
       <Header
         title={step === "auth" ? "התחברות" : "כמעט שם"}
         showBack
-        backHref="/profile"
+        backHref="/"
         showBell={false}
         showMenu={false}
       />
 
-      <div className="flex-1 px-5 pb-8 flex flex-col">
+      <div className="flex-1 page-pad pb-8 flex flex-col anim-page max-w-lg mx-auto w-full">
         {step === "auth" ? (
           <>
             <div className="flex-1 flex flex-col items-center justify-center text-center pt-6 pb-10">
@@ -212,7 +212,7 @@ function LoginInner() {
                 type="button"
                 onClick={handleGoogle}
                 disabled={busy}
-                className="mt-10 flex w-full max-w-sm items-center justify-center gap-3 rounded-3xl bg-white border border-charcoal/[0.08] py-4 px-5 text-base font-bold text-charcoal shadow-card transition active:scale-[0.99] hover:border-coral/25 disabled:opacity-50"
+                className="btn-google mt-10"
               >
                 <GoogleMark className="h-5 w-5 shrink-0" />
                 המשך עם Google
@@ -229,7 +229,7 @@ function LoginInner() {
               <button
                 type="button"
                 onClick={handleContinueAsDemo}
-                className="mt-8 text-xs text-charcoal-light underline-offset-4 hover:text-coral hover:underline"
+                className="mt-8 inline-flex min-h-11 items-center px-3 text-xs text-charcoal-light underline-offset-4 hover:text-coral hover:underline touch-manipulation"
               >
                 המשך כדמו
               </button>

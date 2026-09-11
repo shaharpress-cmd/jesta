@@ -17,6 +17,7 @@ import {
 import { Header } from "@/components/Header";
 import { Avatar } from "@/components/Avatar";
 import { SafetyBanner } from "@/components/SafetyBanner";
+import { PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { CATEGORY_MAP, SAFETY } from "@/lib/categories";
 import type { CategoryId } from "@/lib/types";
@@ -58,8 +59,8 @@ function ProfileInner() {
   );
 
   return (
-    <div>
-      <Header showBack={!isMe} backHref="/" />
+    <PageFrame>
+      <Header showBack={!isMe} backHref="/" showMenu={isMe} />
 
       <div className="page-pad space-y-5 pb-8 max-w-2xl mx-auto">
         {/* Profile header */}
@@ -239,7 +240,7 @@ function ProfileInner() {
 
         <SafetyBanner variant="footer" className="justify-center" />
       </div>
-    </div>
+    </PageFrame>
   );
 }
 

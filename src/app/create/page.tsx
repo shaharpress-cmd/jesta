@@ -2,11 +2,12 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MapPin, Pencil, Zap, Calendar, Clock, ArrowLeft } from "lucide-react";
+import { MapPin, Pencil, Zap, Calendar, Clock, ArrowLeft, Check } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CategoryPills } from "@/components/CategoryPills";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { CreateCategoryTips } from "@/components/CreateCategoryTips";
+import { PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import type { CategoryId, Urgency } from "@/lib/types";
@@ -42,9 +43,9 @@ function CreateForm() {
   const [location, setLocation] = useState("תל אביב, אזור איילון");
   const [urgency, setUrgency] = useState<Urgency>("now");
   const [submitting, setSubmitting] = useState(false);
+  const [published, setPublished] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // When Supabase is configured, wait for session sync before allowing publish.
   const waitingForCloud = isSupabaseConfigured() && !cloudReady;
 
   useEffect(() => {
@@ -57,7 +58,8 @@ function CreateForm() {
   const canSubmit =
     description.trim().length >= 8 &&
     location.trim().length > 0 &&
-    !waitingForCloud;
+    !waitingForCloud &&
+    !published;
 
   const onSubmit = async () => {
     if (!canSubmit) return;
@@ -78,7 +80,11 @@ function CreateForm() {
         locationLabel: location.trim(),
         urgency,
       });
-      router.push(`/jesta/${j.id}`);
+      setPublished(true);
+      setSubmitting(false);
+      window.setTimeout(() => {
+        router.push(`/jesta/${j.id}`);
+      }, 720);
     } catch (e) {
       console.error(e);
       setError(createErrorMessage(e));
@@ -88,7 +94,7 @@ function CreateForm() {
 
   if (waitingForCloud) {
     return (
-      <div className="min-h-dvh">
+      <PageFrame>
         <Header
           title="בקשת ג׳סטה"
           showBack
@@ -96,7 +102,7 @@ function CreateForm() {
           showBell={false}
           showMenu={false}
         />
-        <div className="px-4 py-16 text-center space-y-3">
+        <div className="page-pad py-16 text-center space-y-3">
           <div
             className="mx-auto h-10 w-10 rounded-full border-2 border-coral/30 border-t-coral animate-spin"
             aria-hidden
@@ -108,15 +114,30 @@ function CreateForm() {
             רגע קטן אחרי ההתחברות — ואז אפשר לפרסם בשקט.
           </p>
         </div>
-      </div>
+      </PageFrame>
     );
   }
 
   return (
-    <div className="min-h-dvh">
+    <PageFrame>
       <Header title="בקשת ג׳סטה" showBack backHref="/" showBell={false} showMenu={false} />
 
-      <div className="px-4 space-y-5 pb-8">
+      <div className="page-pad space-y-5 pb-4 max-w-xl mx-auto">
+        {published && (
+          <div
+            role="status"
+            className="anim-success card-soft flex items-center gap-3 border-sage/30 bg-sage-soft/50 p-4"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-sage text-white shadow-sm">
+              <Check className="h-5 w-5" strokeWidth={2.5} />
+            </span>
+            <div>
+              <p className="font-bold text-charcoal">פורסם!</p>
+              <p className="text-xs text-charcoal-muted">מעבירים לכרטיס הג׳סטה…</p>
+            </div>
+          </div>
+        )}
+
         <div>
           <label className="mb-2 block text-sm font-semibold text-charcoal">
             מה צריך?
@@ -131,6 +152,7 @@ function CreateForm() {
               rows={4}
               placeholder="ספרו לנו במה אפשר לעזור..."
               className="input-soft w-full p-4 resize-none min-h-[7.5rem]"
+              disabled={published}
             />
             <Pencil className="absolute bottom-3.5 end-3.5 h-4 w-4 text-charcoal-light" />
           </div>
@@ -156,12 +178,13 @@ function CreateForm() {
           <label className="mb-2 block text-sm font-semibold text-charcoal">
             איפה:
           </label>
-          <div className="flex items-center gap-2 input-soft px-4 py-3.5">
+          <div className="flex items-center gap-2 input-soft px-4 py-3.5 min-h-12">
             <MapPin className="h-5 w-5 text-coral/80 shrink-0" />
             <input
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="flex-1 bg-transparent text-sm focus:outline-none"
+              disabled={published}
             />
           </div>
           <p className="mt-1.5 text-xs text-charcoal-muted">
@@ -179,9 +202,10 @@ function CreateForm() {
                 key={id}
                 type="button"
                 onClick={() => setUrgency(id)}
+                disabled={published}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 py-3 text-sm transition-all",
-                  urgency === id ? "pill-active" : "pill-inactive"
+                  urgency === id ? "chip-active" : "chip-inactive",
+                  "flex-1"
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -196,27 +220,39 @@ function CreateForm() {
         {error && (
           <div
             role="alert"
-            className="rounded-2xl border border-coral/25 bg-coral-soft/60 px-4 py-3 text-sm text-charcoal leading-relaxed"
+            className="anim-enter rounded-2xl border border-coral/25 bg-coral-soft/60 px-4 py-3 text-sm text-charcoal leading-relaxed"
           >
             {error}
           </div>
         )}
 
-        <button
-          type="button"
-          disabled={!canSubmit || submitting}
-          onClick={onSubmit}
-          className="cta-coral"
-        >
-          {submitting ? "מפרסמים…" : "פרסם ג׳סטה"}
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-
-        <p className="text-center text-xs text-charcoal-muted px-4 leading-relaxed">
-          בפרסום אתם מאשרים שזו עזרה לא-מקצועית. ג׳סטה מתווכת בלבד.
-        </p>
+        <div className="sticky-cta">
+          <button
+            type="button"
+            disabled={!canSubmit || submitting}
+            onClick={onSubmit}
+            className={cn("cta-coral", canSubmit && !submitting && !published && "cta-pulse")}
+          >
+            {published ? (
+              <>
+                <Check className="h-5 w-5" />
+                פורסם
+              </>
+            ) : submitting ? (
+              "מפרסמים…"
+            ) : (
+              <>
+                פרסם ג׳סטה
+                <ArrowLeft className="h-5 w-5" />
+              </>
+            )}
+          </button>
+          <p className="mt-2 text-center text-xs text-charcoal-muted px-2 leading-relaxed">
+            בפרסום אתם מאשרים שזו עזרה לא-מקצועית. ג׳סטה מתווכת בלבד.
+          </p>
+        </div>
       </div>
-    </div>
+    </PageFrame>
   );
 }
 
@@ -226,7 +262,7 @@ export default function CreatePage() {
       fallback={
         <div className="min-h-dvh">
           <Header title="בקשת ג׳סטה" showBack backHref="/" showBell={false} showMenu={false} />
-          <div className="px-4 py-8 text-sm text-charcoal-muted">טוען…</div>
+          <div className="page-pad py-8 text-sm text-charcoal-muted">טוען…</div>
         </div>
       }
     >

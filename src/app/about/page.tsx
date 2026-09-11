@@ -58,7 +58,7 @@ const STEPS = [
 
 export default function AboutPage() {
   return (
-    <div>
+    <div className="anim-page">
       <Header title="מה זה ג׳סטה?" showBack backHref="/" showBell={false} showMenu />
 
       <article className="page-pad space-y-6 pb-10 max-w-3xl mx-auto">

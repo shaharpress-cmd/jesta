@@ -7,6 +7,7 @@ import { RadiusFilter } from "@/components/RadiusFilter";
 import { MapPlaceholder } from "@/components/MapPlaceholder";
 import { UserCard } from "@/components/UserCard";
 import { JestaCard } from "@/components/JestaCard";
+import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { RADIUS_OPTIONS } from "@/lib/categories";
 import { cn } from "@/lib/utils";
@@ -42,8 +43,13 @@ export default function NearbyPage() {
     { id: "seekers", label: "מבקשים עזרה", icon: Heart },
   ];
 
+  const emptyHelpers = tab === "helpers" && nearbyUsers.length === 0;
+  const emptySeekers = tab === "seekers" && filteredJestas.length === 0;
+  const emptyAll =
+    tab === "all" && nearbyUsers.length === 0 && filteredJestas.length === 0;
+
   return (
-    <div>
+    <PageFrame>
       <Header subtitle="לידך עכשיו" location='תל אביב · 2 ק״מ' showMenu />
 
       <div className="page-pad space-y-4">
@@ -51,7 +57,7 @@ export default function NearbyPage() {
 
         <div className="relative">
           <MapPlaceholder className="h-48 w-full" pins={5} />
-          <label className="absolute top-3 right-3 flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium border border-charcoal/[0.06] cursor-pointer">
+          <label className="absolute top-3 end-3 flex min-h-11 items-center gap-2 rounded-full bg-white/95 px-3 py-2 text-xs font-medium border border-charcoal/[0.06] cursor-pointer touch-manipulation shadow-sm">
             <span
               className={cn(
                 "relative h-5 w-9 rounded-full transition-colors",
@@ -61,7 +67,7 @@ export default function NearbyPage() {
               <span
                 className={cn(
                   "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all",
-                  onlineOnly ? "right-0.5" : "right-[18px]"
+                  onlineOnly ? "end-0.5" : "end-[18px]"
                 )}
               />
             </span>
@@ -82,12 +88,12 @@ export default function NearbyPage() {
               type="button"
               onClick={() => setTab(id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs transition-colors duration-200 min-h-11",
-                tab === id ? "pill-active" : "pill-inactive"
+                tab === id ? "chip-active" : "chip-inactive",
+                "flex-1"
               )}
             >
               <Icon className="h-3.5 w-3.5" />
-              {label}
+              <span className="truncate">{label}</span>
             </button>
           ))}
         </div>
@@ -101,24 +107,19 @@ export default function NearbyPage() {
               <JestaCard key={j.id} jesta={j} author={getUser(j.authorId)} />
             ))}
 
-          {tab === "helpers" && nearbyUsers.length === 0 && (
-            <Empty />
-          )}
-          {tab === "seekers" && filteredJestas.length === 0 && (
-            <Empty />
+          {(emptyHelpers || emptySeekers || emptyAll) && (
+            <EmptyState
+              emoji="📍"
+              title="אין תוצאות בטווח"
+              body="נסו להרחיב את הרדיוס — או פרסמו ג׳סטה חדשה."
+              primaryHref="/create"
+              primaryLabel="פרסמו ג׳סטה"
+              secondaryHref="/"
+              secondaryLabel="לבית"
+            />
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function Empty() {
-  return (
-    <div className="card-soft p-8 text-center md:col-span-2 xl:col-span-3">
-      <p className="text-3xl mb-2">📍</p>
-      <p className="font-medium">אין תוצאות בטווח</p>
-      <p className="text-sm text-charcoal-muted mt-1">נסו להרחיב את הרדיוס</p>
-    </div>
+    </PageFrame>
   );
 }

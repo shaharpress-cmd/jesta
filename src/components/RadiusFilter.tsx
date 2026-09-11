@@ -20,10 +20,7 @@ export function RadiusFilter({
             key={opt.id}
             type="button"
             onClick={() => onChange(opt.id)}
-            className={cn(
-              "shrink-0 px-3.5 py-2 text-sm transition-colors duration-200",
-              active ? "pill-active" : "pill-inactive"
-            )}
+            className={cn(active ? "chip-active" : "chip-inactive")}
           >
             {opt.label}
           </button>

@@ -42,9 +42,10 @@ export function BottomNav() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="relative -mt-5 lg:mt-0 flex flex-col items-center px-1 touch-manipulation"
+                className="nav-fab"
+                aria-label={tab.label}
               >
-                <span className="flex h-14 w-14 lg:h-11 lg:w-11 items-center justify-center rounded-full bg-coral shadow-fab text-white ring-[5px] ring-cream lg:ring-0 lg:shadow-soft">
+                <span className="nav-fab-orb">
                   <Icon className="h-7 w-7 lg:h-5 lg:w-5" strokeWidth={2.5} />
                 </span>
                 <span className="mt-1 text-[10px] sm:text-[11px] font-semibold text-coral lg:hidden">
@@ -59,11 +60,12 @@ export function BottomNav() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                "relative flex flex-1 flex-col items-center gap-0.5 py-1.5 min-h-12 lg:min-h-0 text-[10px] sm:text-[11px] lg:text-xs transition-colors touch-manipulation",
+                "nav-tab",
                 active
                   ? "font-bold text-coral"
                   : "font-medium text-charcoal-muted"
               )}
+              aria-current={active ? "page" : undefined}
             >
               <span className="relative">
                 <Icon
@@ -77,6 +79,12 @@ export function BottomNav() {
                 )}
               </span>
               {tab.label}
+              {active && (
+                <span
+                  className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-coral lg:hidden"
+                  aria-hidden
+                />
+              )}
             </Link>
           );
         })}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Avatar } from "@/components/Avatar";
+import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { formatRelativeTime } from "@/lib/categories";
 import { cn } from "@/lib/utils";
@@ -23,18 +24,21 @@ export default function MessagesPage() {
   );
 
   return (
-    <div>
-      <Header title="הודעות" showBell={false} />
+    <PageFrame>
+      <Header title="הודעות" showBell={false} showMenu />
 
       <div className="page-pad space-y-2.5 max-w-2xl mx-auto">
         {sorted.length === 0 ? (
-          <div className="card-soft p-10 text-center mt-4">
-            <p className="text-4xl mb-2">💬</p>
-            <p className="font-medium">אין הודעות עדיין</p>
-            <p className="text-sm text-charcoal-muted mt-1">
-              הציעו עזרה בג׳סטה כדי להתחיל שיחה
-            </p>
-          </div>
+          <EmptyState
+            emoji="💬"
+            title="אין הודעות עדיין"
+            body="הציעו עזרה בג׳סטה כדי להתחיל שיחה — או עברו לפיד."
+            primaryHref="/"
+            primaryLabel="לפיד הבית"
+            secondaryHref="/nearby"
+            secondaryLabel="לידך"
+            className="mt-4"
+          />
         ) : (
           sorted.map((t) => {
             const otherId = t.participantIds.find((p) => p !== currentUserId)!;
@@ -54,7 +58,7 @@ export default function MessagesPage() {
               <Link
                 key={t.id}
                 href={`/chat/${t.id}`}
-                className="flex items-center gap-3.5 card-soft p-4 transition hover:border-coral/15"
+                className="flex items-center gap-3.5 card-soft card-lift p-4 anim-enter focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/30"
               >
                 <Avatar
                   src={other.avatar}
@@ -95,6 +99,6 @@ export default function MessagesPage() {
           })
         )}
       </div>
-    </div>
+    </PageFrame>
   );
 }

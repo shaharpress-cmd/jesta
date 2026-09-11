@@ -55,9 +55,9 @@ export default function ChatPage() {
 
   if (!thread || !other) {
     return (
-      <div className="px-4 py-20 text-center">
-        <p>השיחה לא נמצאה</p>
-        <Link href="/messages" className="text-coral mt-2 inline-block">
+      <div className="page-pad py-20 text-center space-y-4">
+        <p className="font-medium text-charcoal">השיחה לא נמצאה</p>
+        <Link href="/messages" className="btn-pressable inline-flex min-h-11 items-center justify-center rounded-full bg-coral px-5 text-sm font-bold text-white shadow-soft">
           להודעות
         </Link>
       </div>
@@ -72,12 +72,13 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] mx-auto flex max-w-md flex-col bg-cream">
+    <div className="fixed inset-0 z-[60] mx-auto flex w-full max-w-md sm:max-w-xl md:max-w-2xl flex-col bg-cream">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-charcoal/[0.05] bg-white/95 px-3 py-3 backdrop-blur">
         <Link
           href="/messages"
-          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-cream"
+          className="hit !bg-transparent hover:!bg-cream"
+          aria-label="חזרה להודעות"
         >
           <ArrowRight className="h-5 w-5" />
         </Link>
@@ -108,10 +109,10 @@ export default function ChatPage() {
             </span>
           </p>
         </div>
-        <button type="button" className="p-2 text-charcoal-muted" aria-label="שיחה">
+        <button type="button" className="hit" aria-label="שיחה">
           <Phone className="h-5 w-5" />
         </button>
-        <button type="button" className="p-2 text-charcoal-muted" aria-label="עוד">
+        <button type="button" className="hit" aria-label="עוד">
           <MoreVertical className="h-5 w-5" />
         </button>
       </div>
@@ -180,7 +181,7 @@ export default function ChatPage() {
           onClick={() =>
             void sendMessage(thread.id, "📍 שיתפתי מיקום כללי באזור שלי")
           }
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full pill-inactive py-2.5 text-xs"
+          className="chip-inactive flex-1 text-xs"
         >
           <MapPin className="h-3.5 w-3.5 text-red-500" />
           שתף מיקום כללי
@@ -190,7 +191,7 @@ export default function ChatPage() {
           onClick={() =>
             void sendMessage(thread.id, "✅ סיימנו את הג׳סטה — תודה!")
           }
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-coral/25 bg-coral-soft py-2.5 text-xs font-medium text-coral"
+          className="chip flex-1 border border-coral/25 bg-coral-soft text-xs font-medium text-coral"
         >
           <CheckCircle2 className="h-3.5 w-3.5" />
           סיימנו את הג׳סטה
@@ -200,10 +201,10 @@ export default function ChatPage() {
       {/* Input */}
       <div className="border-t border-charcoal/5 bg-white px-3 py-3 pb-safe">
         <div className="flex items-center gap-2">
-          <button type="button" className="p-2 text-charcoal-muted" aria-label="צירוף">
+          <button type="button" className="hit" aria-label="צירוף">
             <Paperclip className="h-5 w-5" />
           </button>
-          <button type="button" className="p-2 text-charcoal-muted" aria-label="אימוג׳י">
+          <button type="button" className="hit" aria-label="אימוג׳י">
             <Smile className="h-5 w-5" />
           </button>
           <input
@@ -217,7 +218,7 @@ export default function ChatPage() {
             type="button"
             onClick={onSend}
             disabled={!text.trim()}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-coral text-white shadow-soft disabled:opacity-40"
+            className="btn-pressable flex h-11 w-11 items-center justify-center rounded-2xl bg-coral text-white shadow-soft disabled:bg-[#e8a794] disabled:opacity-100 disabled:shadow-none"
             aria-label="שלח"
           >
             <Send className="h-5 w-5 -scale-x-100" />

@@ -10,7 +10,7 @@ export function UserCard({ user }: { user: User }) {
   return (
     <Link
       href={`/profile?u=${user.id}`}
-      className="flex items-center gap-3.5 card-soft card-lift p-4 anim-enter"
+      className="flex items-center gap-3.5 card-soft card-lift p-4 anim-enter focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/30"
     >
       <Avatar
         src={user.avatar}

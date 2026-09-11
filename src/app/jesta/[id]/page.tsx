@@ -17,6 +17,7 @@ import { MapPlaceholder } from "@/components/MapPlaceholder";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { Avatar } from "@/components/Avatar";
 import { ReportModal } from "@/components/ReportModal";
+import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { CATEGORY_MAP, formatDistance, SAFETY } from "@/lib/categories";
 
@@ -34,6 +35,7 @@ export default function JestaDetailPage() {
   } = useStore();
   const [reportOpen, setReportOpen] = useState(false);
   const [offered, setOffered] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const jesta = getJesta(id);
   const author = jesta ? getUser(jesta.authorId) : undefined;
@@ -54,20 +56,33 @@ export default function JestaDetailPage() {
 
   if (!jesta || !cat || !author) {
     return (
-      <div className="px-4 py-20 text-center">
-        <p className="text-charcoal font-medium">הג׳סטה לא נמצאה</p>
-        <Link href="/" className="mt-4 inline-block text-coral">
-          חזרה לבית
-        </Link>
-      </div>
+      <PageFrame>
+        <Header showBack backHref="/" showBell={false} title="ג׳סטה" />
+        <div className="page-pad py-10">
+          <EmptyState
+            emoji="🔍"
+            title="הג׳סטה לא נמצאה"
+            body="ייתכן שהיא הוסרה או שהקישור ישן."
+            primaryHref="/"
+            primaryLabel="חזרה לבית"
+            secondaryHref="/nearby"
+            secondaryLabel="לידך"
+          />
+        </div>
+      </PageFrame>
     );
   }
 
   const onOffer = async () => {
+    setBusy(true);
     setOffered(true);
-    await offerHelp(jesta.id);
-    const thread = await getOrCreateThread(jesta.id, jesta.authorId);
-    router.push(`/chat/${thread.id}`);
+    try {
+      await offerHelp(jesta.id);
+      const thread = await getOrCreateThread(jesta.id, jesta.authorId);
+      router.push(`/chat/${thread.id}`);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const openChatWithHelper = async (helperId: string) => {
@@ -76,11 +91,11 @@ export default function JestaDetailPage() {
   };
 
   return (
-    <div>
+    <PageFrame>
       <Header showBack backHref="/" showBell showMenu={false} />
 
-      <div className="px-4 space-y-5 pb-10">
-        <div className="flex justify-center">
+      <div className="page-pad space-y-5 pb-10 max-w-2xl mx-auto">
+        <div className="flex justify-center anim-enter">
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold"
             style={{ backgroundColor: `${cat.color}1F`, color: cat.color }}
@@ -90,14 +105,14 @@ export default function JestaDetailPage() {
           </span>
         </div>
 
-        <h1 className="text-2xl font-black text-charcoal text-center leading-snug px-2">
+        <h1 className="text-2xl font-black text-charcoal text-center leading-snug px-2 anim-enter">
           {jesta.title}
         </h1>
 
         <div className="flex items-center justify-center gap-4 flex-wrap">
           <Link
             href={`/profile?u=${author.id}`}
-            className="flex items-center gap-2"
+            className="flex min-h-11 items-center gap-2 rounded-2xl px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/30"
           >
             <Avatar
               src={author.avatar}
@@ -148,7 +163,7 @@ export default function JestaDetailPage() {
                 user ? (
                   <div
                     key={user.id}
-                    className="shrink-0 w-40 card-soft p-3.5"
+                    className="shrink-0 w-40 card-soft p-3.5 anim-enter"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Avatar src={user.avatar} name={user.name} size="sm" />
@@ -166,7 +181,7 @@ export default function JestaDetailPage() {
                     <button
                       type="button"
                       onClick={() => openChatWithHelper(user.id)}
-                      className="flex w-full items-center justify-center gap-1 rounded-full border border-coral/35 bg-coral-soft/60 py-2 text-xs font-semibold text-coral"
+                      className="btn-pressable flex w-full min-h-11 items-center justify-center gap-1 rounded-full border border-coral/35 bg-coral-soft/60 py-2 text-xs font-semibold text-coral"
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
                       צ׳אט
@@ -182,14 +197,20 @@ export default function JestaDetailPage() {
           <div className="space-y-3 pt-2">
             <button
               type="button"
+              disabled={busy}
               onClick={() => {
                 if (alreadyOffered) {
                   void (async () => {
-                    const thread = await getOrCreateThread(
-                      jesta.id,
-                      jesta.authorId
-                    );
-                    router.push(`/chat/${thread.id}`);
+                    setBusy(true);
+                    try {
+                      const thread = await getOrCreateThread(
+                        jesta.id,
+                        jesta.authorId
+                      );
+                      router.push(`/chat/${thread.id}`);
+                    } finally {
+                      setBusy(false);
+                    }
                   })();
                 } else {
                   void onOffer();
@@ -202,7 +223,11 @@ export default function JestaDetailPage() {
               ) : (
                 <Heart className="h-5 w-5" fill="currentColor" />
               )}
-              {alreadyOffered ? "צ׳אט" : "אני יכול לעזור"}
+              {busy
+                ? "רגע…"
+                : alreadyOffered
+                  ? "צ׳אט"
+                  : "אני יכול לעזור"}
             </button>
             <button
               type="button"
@@ -229,6 +254,6 @@ export default function JestaDetailPage() {
           });
         }}
       />
-    </div>
+    </PageFrame>
   );
 }

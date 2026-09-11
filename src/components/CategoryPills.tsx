@@ -45,10 +45,7 @@ export function CategoryPills({
         <button
           type="button"
           onClick={() => onSelect("all")}
-          className={cn(
-            "shrink-0 px-4 py-2 text-sm transition-colors duration-200",
-            selected === "all" ? "pill-active" : "pill-inactive"
-          )}
+          className={cn(selected === "all" ? "chip-active" : "chip-inactive")}
         >
           הכל
         </button>
@@ -61,10 +58,7 @@ export function CategoryPills({
             key={c.id}
             type="button"
             onClick={() => onSelect(c.id)}
-            className={cn(
-              "shrink-0 px-3.5 py-2 text-sm transition-colors duration-200 flex items-center gap-1.5",
-              active ? "pill-active" : "pill-inactive"
-            )}
+            className={cn(active ? "chip-active" : "chip-inactive")}
           >
             <Icon
               className={cn("h-3.5 w-3.5", active ? "text-white" : "text-coral")}

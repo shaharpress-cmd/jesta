@@ -107,7 +107,7 @@ export function AppMenu({
             ref={closeRef}
             type="button"
             onClick={onClose}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-charcoal-muted hover:bg-white/80 transition touch-manipulation"
+            className="hit"
             aria-label="סגור"
           >
             <X className="h-5 w-5" strokeWidth={2} />
