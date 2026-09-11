@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { JestiBuddy } from "@/components/JestiBuddy";
 
 export function EmptyState({
   emoji,
@@ -28,9 +29,12 @@ export function EmptyState({
         className
       )}
     >
-      <p className="mb-2 text-4xl" aria-hidden>
-        {emoji}
-      </p>
+      <div className="mb-3 flex flex-col items-center gap-1">
+        <JestiBuddy variant="cheer" size="lg" />
+        <p className="text-3xl leading-none" aria-hidden>
+          {emoji}
+        </p>
+      </div>
       <p className="font-bold text-charcoal">{title}</p>
       <p className="mt-1 text-sm leading-relaxed text-charcoal-muted">{body}</p>
       {(primaryHref || secondaryHref) && (

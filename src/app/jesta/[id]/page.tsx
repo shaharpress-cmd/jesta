@@ -20,6 +20,7 @@ import { SafetyBanner } from "@/components/SafetyBanner";
 import { Avatar } from "@/components/Avatar";
 import { ReportModal } from "@/components/ReportModal";
 import { EmptyState, PageFrame } from "@/components/EmptyState";
+import { JestiBuddy } from "@/components/JestiBuddy";
 import { DetailSkeleton } from "@/components/FeedSkeleton";
 import { SessionModeChip } from "@/components/SessionModeChip";
 import { useStore } from "@/lib/store";
@@ -368,7 +369,10 @@ export default function JestaDetailPage() {
 
       {showStickyBar && (
         <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[60]">
-          <div className="pointer-events-auto mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="pointer-events-auto relative mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+            <div className="jesti-float-sticky pointer-events-none" aria-hidden>
+              <JestiBuddy variant="idle" size="sm" />
+            </div>
             {isOwn ? (
               <div className="flex flex-col gap-2">
                 <p className="text-center text-sm font-bold text-charcoal">

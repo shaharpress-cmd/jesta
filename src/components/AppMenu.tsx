@@ -131,7 +131,7 @@ export function AppMenu({
                 <Link
                   href={href}
                   onClick={onClose}
-                  className="flex min-h-12 items-center gap-3 rounded-2xl px-3 py-2.5 text-[15px] font-semibold text-charcoal hover:bg-white/80 transition touch-manipulation"
+                  className="menu-link"
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-coral shadow-sm border border-charcoal/[0.05]">
                     <Icon className="h-[18px] w-[18px]" strokeWidth={2.1} />
@@ -144,7 +144,7 @@ export function AppMenu({
               <Link
                 href={account.href}
                 onClick={onClose}
-                className="flex min-h-12 items-center gap-3 rounded-2xl px-3 py-2.5 text-[15px] font-semibold text-charcoal hover:bg-white/80 transition touch-manipulation"
+                className="menu-link"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-coral-soft text-coral shadow-sm">
                   <account.icon className="h-[18px] w-[18px]" strokeWidth={2.1} />

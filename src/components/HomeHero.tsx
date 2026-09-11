@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useStore } from "@/lib/store";
+import { JestiBuddy } from "@/components/JestiBuddy";
 
 const MARKS = ["🤝", "📍", "✨"] as const;
 
@@ -56,13 +57,19 @@ export function HomeHero() {
                 מי שצריך ג׳סטה ↔ מי שרוצה לתת
               </p>
             </div>
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap items-end gap-2.5 sm:gap-3">
               <Link href="/create" className="hero-cta-primary">
                 פרסמו ג׳סטה
               </Link>
               <Link href="/nearby" className="hero-cta-secondary">
                 לידך
               </Link>
+              <JestiBuddy
+                variant="wave"
+                size="md"
+                className="ms-1 mb-0.5 opacity-95"
+                label="ג׳סטי"
+              />
             </div>
           </>
         ) : (
@@ -76,13 +83,19 @@ export function HomeHero() {
                 עזרה בין אנשים לפי מיקום — באזור שלך
               </p>
             </div>
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap items-end gap-2.5 sm:gap-3">
               <Link href="/about#how" className="hero-cta-primary">
                 איך זה עובד
               </Link>
               <Link href="/login" className="hero-cta-secondary">
                 התחברות
               </Link>
+              <JestiBuddy
+                variant="wave"
+                size="md"
+                className="ms-1 mb-0.5 opacity-95"
+                label="ג׳סטי"
+              />
             </div>
           </>
         )}
