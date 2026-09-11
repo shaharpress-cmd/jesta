@@ -52,6 +52,11 @@ function LoginInner() {
   } = useStore();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const rawNext = searchParams.get("next");
+  const nextPath =
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
+      ? rawNext
+      : "/";
   const [step, setStep] = useState<Step>("auth");
   const [displayName, setDisplayName] = useState("");
   const [accepted, setAccepted] = useState(false);
@@ -86,8 +91,8 @@ function LoginInner() {
         setAccepted(Boolean(currentUser.acceptedTermsAt));
         setStep("onboarding");
       } else {
-        // Already completed — skip to home
-        router.replace("/");
+        // Already completed — continue to intended destination
+        router.replace(nextPath);
         return;
       }
     } else if (cloudReady && !isCloud) {
@@ -95,7 +100,7 @@ function LoginInner() {
       setStep("auth");
     }
     setOnboardingReady(true);
-  }, [searchParams, cloudReady, isCloud, currentUser, router]);
+  }, [searchParams, cloudReady, isCloud, currentUser, router, nextPath]);
 
   const handleGoogle = async () => {
     setBusy(true);
@@ -103,9 +108,11 @@ function LoginInner() {
       if (isSupabaseConfigured()) {
         const supabase = createClient();
         const origin = window.location.origin;
+        const callback = new URL(`${origin}/auth/callback`);
+        if (nextPath !== "/") callback.searchParams.set("next", nextPath);
         const { error } = await supabase.auth.signInWithOAuth({
           provider: "google",
-          options: { redirectTo: `${origin}/auth/callback` },
+          options: { redirectTo: callback.toString() },
         });
         if (error) {
           console.error("Google OAuth error:", error.message);
@@ -127,12 +134,12 @@ function LoginInner() {
 
   const handleContinueAsDemo = () => {
     signInAsDemo("u-me");
-    router.push("/");
+    router.push(nextPath);
   };
 
   const handleDemoPick = (id: string) => {
     signInAsDemo(id);
-    router.push("/");
+    router.push(nextPath);
   };
 
   const handleStart = async () => {
@@ -143,7 +150,7 @@ function LoginInner() {
         displayName: displayName.trim() || "משתמש Google",
         acceptedTerms: true,
       });
-      router.push("/");
+      router.push(nextPath);
     } finally {
       setBusy(false);
     }

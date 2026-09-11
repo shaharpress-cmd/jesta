@@ -14,6 +14,7 @@ import {
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/Wordmark";
+import { SessionModeChip } from "@/components/SessionModeChip";
 
 const LINKS = [
   { href: "/about", label: "מה זה ג׳סטה?", icon: Info },
@@ -102,6 +103,9 @@ export function AppMenu({
             <p className="mt-1 text-[12px] font-medium text-charcoal-muted">
               עזרה בין אנשים לפי מיקום
             </p>
+            <div className="mt-2">
+              <SessionModeChip compact />
+            </div>
           </div>
           <button
             ref={closeRef}

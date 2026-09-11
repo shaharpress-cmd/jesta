@@ -23,8 +23,9 @@ const config: Config = {
         },
         charcoal: {
           DEFAULT: "#3D405B",
-          muted: "#6B6E85",
-          light: "#9A9DB0",
+          /* Slightly darker for WCAG-ish card/meta contrast on cream */
+          muted: "#5C5F78",
+          light: "#7E8196",
         },
         sage: {
           DEFAULT: "#81B29A",

@@ -103,7 +103,11 @@ export function profileToUser(row: ProfileRow): User {
       requested: row.requested_count ?? 0,
       avgResponseMin: row.avg_response_min ?? 0,
     },
-    helpCategories: row.help_categories ?? [],
+    helpCategories:
+      row.help_categories && row.help_categories.length > 0
+        ? row.help_categories
+        : (["neighborhood", "errands"] as CategoryId[]),
+    distanceM: online ? 400 : 1200,
     lastActive: online ? "עכשיו" : undefined,
     authProvider: "google",
     acceptedTermsAt: row.terms_accepted_at ?? undefined,

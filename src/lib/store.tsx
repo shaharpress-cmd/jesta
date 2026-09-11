@@ -278,6 +278,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       return profileToUser(data as ProfileRow);
     }
 
+    const defaultHelp: CategoryId[] = ["neighborhood", "errands"];
     const { data, error } = await supabase
       .from("profiles")
       .insert({
@@ -286,6 +287,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         avatar_url,
         verified_basic: true,
         last_seen_at: now,
+        help_categories: defaultHelp,
       })
       .select("*")
       .single();
@@ -301,9 +303,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         online: true,
         tags: ["חדש בג׳סטה"],
         stats: { given: 0, requested: 0, avgResponseMin: 0 },
-        helpCategories: [] as CategoryId[],
+        helpCategories: defaultHelp,
         authProvider: "google" as const,
         lastActive: "עכשיו",
+        distanceM: 0,
       };
     }
     return profileToUser(data as ProfileRow);

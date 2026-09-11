@@ -49,8 +49,8 @@ export function JestaCard({
         {jesta.title}
       </h3>
 
-      <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] font-medium text-charcoal-muted">
-        <span className="inline-flex items-center gap-1 text-charcoal/80">
+      <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] font-semibold text-charcoal-muted">
+        <span className="inline-flex items-center gap-1 text-charcoal/85">
           <MapPin className="h-3.5 w-3.5 text-coral shrink-0" />
           {jesta.locationLabel}
           <span className="text-charcoal-light">·</span>

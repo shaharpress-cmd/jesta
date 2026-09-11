@@ -10,11 +10,21 @@ import { RadiusFilter } from "@/components/RadiusFilter";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { HomeHero } from "@/components/HomeHero";
 import { EmptyState, PageFrame } from "@/components/EmptyState";
+import { FeedSkeleton } from "@/components/FeedSkeleton";
+import { SessionModeChip } from "@/components/SessionModeChip";
 import { useStore } from "@/lib/store";
+import { exampleLocationChip } from "@/lib/location";
 import type { CategoryId } from "@/lib/types";
 
 export default function HomePage() {
-  const { filteredJestas, getUser, radius, setRadius } = useStore();
+  const {
+    filteredJestas,
+    getUser,
+    radius,
+    setRadius,
+    cloudReady,
+    isLoggedIn,
+  } = useStore();
   const [category, setCategory] = useState<CategoryId | "all">("all");
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -33,11 +43,13 @@ export default function HomePage() {
     });
   }, [filteredJestas, category, query]);
 
+  const locationLabel = exampleLocationChip({ guest: !isLoggedIn });
+
   return (
     <PageFrame>
       <Header
         variant="home"
-        location='תל אביב · 2 ק״מ'
+        location={locationLabel}
         onSearchClick={() => {
           setSearchOpen(true);
           setTimeout(() => searchRef.current?.focus(), 50);
@@ -47,6 +59,9 @@ export default function HomePage() {
       <HomeHero />
 
       <div className="filter-frost page-pad">
+        <div className="mb-2.5 flex justify-center sm:justify-start">
+          <SessionModeChip />
+        </div>
         {(searchOpen || query) && (
           <div className="relative max-w-xl mb-2.5 anim-enter">
             <Search className="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal-light" />
@@ -74,27 +89,31 @@ export default function HomePage() {
             לידך עכשיו
           </h2>
           <span className="inline-flex items-center rounded-full bg-coral-soft px-3 py-1.5 text-[13px] font-bold text-coral tabular-nums">
-            {list.length} ג׳סטות
+            {cloudReady ? `${list.length} ג׳סטות` : "…"}
           </span>
         </div>
 
-        <div className="feed-grid">
-          {list.length === 0 ? (
-            <EmptyState
-              emoji="🤝"
-              title="אין ג׳סטות בטווח הזה"
-              body="נסו להרחיב את הרדיוס או לשנות קטגוריה — או פרסמו את הראשונה."
-              primaryHref="/create"
-              primaryLabel="פרסמו ג׳סטה"
-              secondaryHref="/nearby"
-              secondaryLabel="לידך"
-            />
-          ) : (
-            list.map((j) => (
-              <JestaCard key={j.id} jesta={j} author={getUser(j.authorId)} />
-            ))
-          )}
-        </div>
+        {!cloudReady ? (
+          <FeedSkeleton cards={4} />
+        ) : (
+          <div className="feed-grid">
+            {list.length === 0 ? (
+              <EmptyState
+                emoji="🤝"
+                title="אין ג׳סטות בטווח הזה"
+                body="נסו להרחיב את הרדיוס או לשנות קטגוריה — או פרסמו את הראשונה."
+                primaryHref="/create"
+                primaryLabel="פרסמו ג׳סטה"
+                secondaryHref="/nearby"
+                secondaryLabel="לידך"
+              />
+            ) : (
+              list.map((j) => (
+                <JestaCard key={j.id} jesta={j} author={getUser(j.authorId)} />
+              ))
+            )}
+          </div>
+        )}
 
         <div className="flex justify-center pt-1">
           <Link
@@ -102,7 +121,7 @@ export default function HomePage() {
             className="btn-pressable inline-flex min-h-11 items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm"
           >
             טיפים
-            <span className="text-charcoal-light font-medium">· מדריכים קצרים</span>
+            <span className="text-charcoal-muted font-medium">· מדריכים קצרים</span>
           </Link>
         </div>
 

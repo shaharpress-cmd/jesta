@@ -27,18 +27,18 @@ export function UserCard({ user }: { user: User }) {
             {user.rating.toFixed(1)}
           </span>
         </div>
-        <p className="mt-0.5 flex items-center gap-1 text-xs text-charcoal-muted">
+        <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-charcoal-muted">
           <MapPin className="h-3 w-3 text-coral/80" />
           {formatDistance(user.distanceM ?? 0)} ממך
         </p>
         <div className="mt-2 flex flex-wrap gap-1.5">
-          <span className="text-[10px] text-charcoal-muted">
+          <span className="text-[11px] font-medium text-charcoal-muted">
             {user.stats.given} ג׳סטות החודש
           </span>
           {user.tags.slice(0, 2).map((t) => (
             <span
               key={t}
-              className="rounded-full bg-cream px-2 py-0.5 text-[10px] text-charcoal-muted border border-charcoal/[0.05]"
+              className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-medium text-charcoal-muted border border-charcoal/[0.06]"
             >
               {t}
             </span>

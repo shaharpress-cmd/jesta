@@ -8,11 +8,21 @@ const MARKS = ["🤝", "📍", "✨"] as const;
 export function HomeHero() {
   const { isLoggedIn, cloudReady } = useStore();
   const loggedIn = cloudReady && isLoggedIn;
+  const waiting = !cloudReady;
 
   return (
     <section
-      className={loggedIn ? "hero-band hero-band-soft page-pad" : "hero-band page-pad"}
-      aria-label={loggedIn ? "ג׳סטה לידך" : "היכרות עם ג׳סטה"}
+      className={
+        waiting
+          ? "hero-band hero-band-soft page-pad"
+          : loggedIn
+            ? "hero-band hero-band-soft page-pad"
+            : "hero-band page-pad"
+      }
+      aria-label={
+        waiting ? "טוען" : loggedIn ? "ג׳סטה לידך" : "היכרות עם ג׳סטה"
+      }
+      aria-busy={waiting || undefined}
     >
       <div className="hero-blobs" aria-hidden>
         <span className="hero-blob hero-blob-a" />
@@ -29,7 +39,16 @@ export function HomeHero() {
           ))}
         </div>
 
-        {loggedIn ? (
+        {waiting ? (
+          <div className="space-y-3">
+            <div className="h-9 w-[70%] max-w-sm rounded-xl bg-white/50 animate-pulse" />
+            <div className="h-4 w-48 rounded-lg bg-white/40 animate-pulse" />
+            <div className="flex gap-2.5 pt-1">
+              <div className="h-12 w-32 rounded-full bg-white/55 animate-pulse" />
+              <div className="h-12 w-24 rounded-full bg-white/40 animate-pulse" />
+            </div>
+          </div>
+        ) : loggedIn ? (
           <>
             <div className="space-y-2">
               <h1 className="hero-headline">עזרה בין אנשים, לידך</h1>

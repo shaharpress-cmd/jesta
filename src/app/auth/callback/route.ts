@@ -33,6 +33,7 @@ export async function GET(request: Request) {
           avatar_url,
           verified_basic: true,
           last_seen_at: new Date().toISOString(),
+          help_categories: ["neighborhood", "errands"],
         });
       } else {
         await supabase
@@ -43,10 +44,15 @@ export async function GET(request: Request) {
 
       const profile = existing ?? { name, terms_accepted_at: null };
       if (needsProfileOnboarding(profile)) {
-        return NextResponse.redirect(`${origin}/login?onboarding=1`);
+        const onboarding = new URL(`${origin}/login`);
+        onboarding.searchParams.set("onboarding", "1");
+        if (next && next !== "/") onboarding.searchParams.set("next", next);
+        return NextResponse.redirect(onboarding.toString());
       }
 
-      return NextResponse.redirect(`${origin}${next}`);
+      const safeNext =
+        next.startsWith("/") && !next.startsWith("//") ? next : "/";
+      return NextResponse.redirect(`${origin}${safeNext}`);
     }
   }
 

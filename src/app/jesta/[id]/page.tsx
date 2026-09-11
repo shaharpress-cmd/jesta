@@ -11,6 +11,7 @@ import {
   Users,
   MessageCircle,
   ShieldCheck,
+  LogIn,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { MapPlaceholder } from "@/components/MapPlaceholder";
@@ -18,6 +19,8 @@ import { SafetyBanner } from "@/components/SafetyBanner";
 import { Avatar } from "@/components/Avatar";
 import { ReportModal } from "@/components/ReportModal";
 import { EmptyState, PageFrame } from "@/components/EmptyState";
+import { DetailSkeleton } from "@/components/FeedSkeleton";
+import { SessionModeChip } from "@/components/SessionModeChip";
 import { useStore } from "@/lib/store";
 import { CATEGORY_MAP, formatDistance, SAFETY } from "@/lib/categories";
 
@@ -32,6 +35,8 @@ export default function JestaDetailPage() {
     getOrCreateThread,
     currentUserId,
     submitReport,
+    cloudReady,
+    isLoggedIn,
   } = useStore();
   const [reportOpen, setReportOpen] = useState(false);
   const [offered, setOffered] = useState(false);
@@ -40,6 +45,7 @@ export default function JestaDetailPage() {
   const jesta = getJesta(id);
   const author = jesta ? getUser(jesta.authorId) : undefined;
   const cat = jesta ? CATEGORY_MAP[jesta.category] : null;
+  const loginNext = `/login?next=${encodeURIComponent(`/jesta/${id}`)}`;
 
   const helpers = useMemo(() => {
     if (!jesta) return [];
@@ -53,6 +59,18 @@ export default function JestaDetailPage() {
     offered ||
     (!!jesta &&
       offers.some((o) => o.jestaId === jesta.id && o.userId === currentUserId));
+
+  const isOwn = !!jesta && jesta.authorId === currentUserId;
+  const showHelpBar = !!jesta && !isOwn;
+
+  if (!cloudReady) {
+    return (
+      <PageFrame>
+        <Header showBack backHref="/" showBell={false} title="ג׳סטה" />
+        <DetailSkeleton />
+      </PageFrame>
+    );
+  }
 
   if (!jesta || !cat || !author) {
     return (
@@ -74,6 +92,10 @@ export default function JestaDetailPage() {
   }
 
   const onOffer = async () => {
+    if (!isLoggedIn) {
+      router.push(loginNext);
+      return;
+    }
     setBusy(true);
     setOffered(true);
     try {
@@ -85,16 +107,72 @@ export default function JestaDetailPage() {
     }
   };
 
+  const onMessage = async () => {
+    if (!isLoggedIn) {
+      router.push(loginNext);
+      return;
+    }
+    setBusy(true);
+    try {
+      if (!alreadyOffered) {
+        await offerHelp(jesta.id);
+        setOffered(true);
+      }
+      const thread = await getOrCreateThread(jesta.id, jesta.authorId);
+      router.push(`/chat/${thread.id}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const openChatWithHelper = async (helperId: string) => {
+    if (!isLoggedIn) {
+      router.push(loginNext);
+      return;
+    }
     const thread = await getOrCreateThread(jesta.id, helperId);
     router.push(`/chat/${thread.id}`);
   };
+
+  const primaryLabel = busy
+    ? "רגע…"
+    : !isLoggedIn
+      ? "התחברות כדי לעזור"
+      : alreadyOffered
+        ? "המשך בצ׳אט"
+        : "אני יכול/ה לעזור";
 
   return (
     <PageFrame>
       <Header showBack backHref="/" showBell showMenu={false} />
 
-      <div className="page-pad space-y-5 pb-10 max-w-2xl mx-auto">
+      <div
+        className={`page-pad space-y-5 max-w-2xl mx-auto ${
+          showHelpBar ? "pb-36" : "pb-10"
+        }`}
+      >
+        <div className="flex justify-center">
+          <SessionModeChip compact />
+        </div>
+
+        {!isLoggedIn && (
+          <div className="rounded-3xl border border-coral/25 bg-coral-soft/70 px-4 py-3.5 text-center anim-enter">
+            <p className="text-sm font-bold text-charcoal">
+              רוצים להציע עזרה?
+            </p>
+            <p className="mt-1 text-[13px] leading-relaxed text-charcoal/80">
+              התחברו כדי להציע עזרה או לשלוח הודעה — הכפתור למטה תמיד זמין.
+            </p>
+            <Link
+              href={loginNext}
+              className="mt-3 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-sm touch-manipulation"
+            >
+              <LogIn className="h-4 w-4" />
+              התחברות
+            </Link>
+          </div>
+        )}
+
         <div className="flex justify-center anim-enter">
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold"
@@ -138,6 +216,9 @@ export default function JestaDetailPage() {
             <span className="flex items-center gap-1 text-charcoal-muted">
               <MapPin className="h-4 w-4 text-coral/80" />
               {formatDistance(jesta.distanceM)}
+              <span className="text-[10px] font-medium text-charcoal-muted/90">
+                · לדוגמה
+              </span>
             </span>
           </div>
         </div>
@@ -147,7 +228,7 @@ export default function JestaDetailPage() {
         </p>
 
         <MapPlaceholder
-          label={jesta.locationLabel}
+          label={`${jesta.locationLabel} · אזור לדוגמה`}
           className="h-44 w-full"
           pins={1}
         />
@@ -193,48 +274,14 @@ export default function JestaDetailPage() {
           </section>
         )}
 
-        {jesta.authorId !== currentUserId && (
-          <div className="space-y-3 pt-2">
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                if (alreadyOffered) {
-                  void (async () => {
-                    setBusy(true);
-                    try {
-                      const thread = await getOrCreateThread(
-                        jesta.id,
-                        jesta.authorId
-                      );
-                      router.push(`/chat/${thread.id}`);
-                    } finally {
-                      setBusy(false);
-                    }
-                  })();
-                } else {
-                  void onOffer();
-                }
-              }}
-              className="cta-coral"
-            >
-              {alreadyOffered ? (
-                <MessageCircle className="h-5 w-5" />
-              ) : (
-                <Heart className="h-5 w-5" fill="currentColor" />
-              )}
-              {busy
-                ? "רגע…"
-                : alreadyOffered
-                  ? "צ׳אט"
-                  : "אני יכול לעזור"}
-            </button>
+        {showHelpBar && (
+          <div className="flex justify-center pt-1">
             <button
               type="button"
               onClick={() => setReportOpen(true)}
-              className="btn-outline-coral"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-charcoal-muted hover:text-coral touch-manipulation"
             >
-              <Flag className="h-5 w-5" />
+              <Flag className="h-4 w-4" />
               דווח
             </button>
           </div>
@@ -242,6 +289,39 @@ export default function JestaDetailPage() {
 
         <SafetyBanner variant="footer" className="justify-center" />
       </div>
+
+      {showHelpBar && (
+        <div className="fixed bottom-0 inset-x-0 z-50 mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl">
+          <div className="border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => void onOffer()}
+                className="cta-coral !min-h-[3.25rem] text-[16px] shadow-fab"
+              >
+                {!isLoggedIn ? (
+                  <LogIn className="h-5 w-5" />
+                ) : alreadyOffered ? (
+                  <MessageCircle className="h-5 w-5" />
+                ) : (
+                  <Heart className="h-5 w-5" fill="currentColor" />
+                )}
+                {primaryLabel}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => void onMessage()}
+                className="btn-outline-coral !min-h-12 sm:!w-auto sm:min-w-[10.5rem] sm:shrink-0"
+              >
+                <MessageCircle className="h-5 w-5" />
+                שלח הודעה
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ReportModal
         open={reportOpen}
