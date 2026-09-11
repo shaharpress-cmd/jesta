@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Heart, Plus, MessageCircle, User } from "lucide-react";
+import { Home, MapPinned, Plus, MessageCircle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 
 const tabs = [
   { href: "/", label: "בית", icon: Home },
-  { href: "/nearby", label: "לידך", icon: Heart },
+  { href: "/nearby", label: "לידך", icon: MapPinned },
   { href: "/create", label: "פרסם", icon: Plus, special: true },
   { href: "/messages", label: "הודעות", icon: MessageCircle },
   { href: "/profile", label: "פרופיל", icon: User },

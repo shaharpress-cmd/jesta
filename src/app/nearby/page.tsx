@@ -71,7 +71,7 @@ export default function NearbyPage() {
               checked={onlineOnly}
               onChange={(e) => setOnlineOnly(e.target.checked)}
             />
-            הצג אותי במפה
+            רק מי שאונליין
           </label>
         </div>
 
