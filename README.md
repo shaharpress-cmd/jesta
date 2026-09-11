@@ -28,11 +28,11 @@ npm start
 ## Stack
 
 - Next.js 14 App Router + TypeScript + Tailwind
-- In-memory seed data + `localStorage` persistence
-- Auth: Google-first UI; real OAuth when `NEXT_PUBLIC_SUPABASE_*` set, else `signInWithGoogle()` stub
-- Supabase helpers: `src/lib/supabase/{client,server}.ts` + `/auth/callback`
+- Dual data path: seed + `localStorage` for demo; **Supabase** for Google-authenticated users
+- Auth: Google OAuth via Supabase when `NEXT_PUBLIC_SUPABASE_*` set, else `signInWithGoogle()` stub
+- Supabase helpers: `src/lib/supabase/{client,server,mappers}.ts` + `/auth/callback` + session middleware
 - PWA: `public/manifest.json` (`start_url`/`scope` `/`) + `public/sw.js`
-- Schema: `supabase/schema.sql`
+- Schema: `supabase/schema.sql` (+ `migrations/001_profile_on_auth_user.sql`)
 
 ## Routes
 
@@ -47,35 +47,31 @@ npm start
 | `/profile` | Profile (badges/tags/stats); `?u=` for others; link → `/login` |
 | `/login` | Calm Google-first auth + optional name/terms step; demo disclosure |
 
-## Auth (MVP stub → Supabase Google)
+## Auth + cloud data
 
 **Current (`/login`):**
 
 1. Primary CTA «המשך עם Google» → if Supabase env set: real OAuth via `/auth/callback`; else stub `signInWithGoogle()` in `src/lib/store.tsx`
-2. Stub path: creates/reuses user `u-google` with `authProvider: 'google-stub'`, then optional onboarding
-3. Optional onboarding: display name + accept תנאי שימוש ומדיניות פרטיות → «בואו נתחיל»
-4. Fallback: «המשך כדמו» or expand «מצב דמו» to pick seed users (`authProvider: 'demo'`)
+2. After Google session: upsert `profiles`, set `currentUser`, load `jestas` / `offers` / `chat_threads` / `messages` from Supabase (RLS + anon key only)
+3. Writes (`createJesta`, `offerHelp`, `sendMessage`, `submitReport`) go to Supabase when `isCloud`
+4. Stub / «המשך כדמו» keep localStorage seed UX (`authProvider: 'demo' | 'google-stub'`)
 
-Stub needs no Google OAuth client IDs; real OAuth needs Supabase + Google provider.
+### Setup checklist
 
-### Wire real Supabase Google (when project is ready)
-
-1. Copy `.env.example` → `.env.local` and fill `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (no invented keys).
-2. Supabase Dashboard → Authentication → Providers → enable **Google**.
-3. Add redirect URL: `{SITE_URL}/auth/callback` (and localhost for dev).
-4. `/login` already calls `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${origin}/auth/callback` } })` when env vars are present; otherwise keeps the stub.
-5. Keep the same `User` shape in `src/lib/types.ts`; map `auth.users` → `profiles`.
+1. Copy `.env.example` → `.env.local` and fill `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`.
+2. Run `supabase/schema.sql` (includes RLS + `handle_new_user` trigger). If schema already applied, run `supabase/migrations/001_profile_on_auth_user.sql`.
+3. Enable Google provider; add `{SITE_URL}/auth/callback`.
+4. `category_id` enum matches app `CategoryId`: fuel, moving, home, errands, garden, pets, digital, neighborhood, other.
 
 ## Categories
 
 דלק/דרך · הובלה קלה · בית/מדף/הרמה · קניות/סידורים · גינה · חיות מחמד · דיגיטלי · שכונה · אחר
 
-## Later: Vercel + Supabase
+## Vercel + Supabase
 
-1. Push repo → import on [Vercel](https://vercel.com); framework Next.js.
-2. Create Supabase project → run `supabase/schema.sql`.
-3. Add env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`.
-4. Finish wiring session → `currentUser` in `src/lib/store.tsx`; keep types in `src/lib/types.ts`.
+1. Env on Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`.
+2. Apply schema / profile trigger in Supabase SQL editor if not already.
+3. Cloud path is live in `src/lib/store.tsx` when a Google session exists.
 
 ## Custom domain on Vercel · דומיין מותאם ב-Vercel
 

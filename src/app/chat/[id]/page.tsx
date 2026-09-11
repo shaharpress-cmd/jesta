@@ -64,10 +64,11 @@ export default function ChatPage() {
     );
   }
 
-  const onSend = () => {
+  const onSend = async () => {
     if (!text.trim()) return;
-    sendMessage(thread.id, text);
+    const body = text;
     setText("");
+    await sendMessage(thread.id, body);
   };
 
   return (
@@ -177,7 +178,7 @@ export default function ChatPage() {
         <button
           type="button"
           onClick={() =>
-            sendMessage(thread.id, "📍 שיתפתי מיקום כללי באזור שלי")
+            void sendMessage(thread.id, "📍 שיתפתי מיקום כללי באזור שלי")
           }
           className="flex flex-1 items-center justify-center gap-1.5 rounded-full pill-inactive py-2.5 text-xs"
         >
@@ -187,7 +188,7 @@ export default function ChatPage() {
         <button
           type="button"
           onClick={() =>
-            sendMessage(thread.id, "✅ סיימנו את הג׳סטה — תודה!")
+            void sendMessage(thread.id, "✅ סיימנו את הג׳סטה — תודה!")
           }
           className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-coral/25 bg-coral-soft py-2.5 text-xs font-medium text-coral"
         >

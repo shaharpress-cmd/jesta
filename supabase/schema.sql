@@ -84,3 +84,66 @@ alter table public.offers enable row level security;
 alter table public.chat_threads enable row level security;
 alter table public.messages enable row level security;
 alter table public.reports enable row level security;
+
+-- Basic RLS policies (MVP — tighten later)
+-- profiles: anyone can read; users update own
+create policy "profiles_select_all" on public.profiles for select using (true);
+create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
+create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id);
+
+-- jestas: public read open; authors write
+create policy "jestas_select_all" on public.jestas for select using (true);
+create policy "jestas_insert_auth" on public.jestas for insert with check (auth.uid() = author_id);
+create policy "jestas_update_author" on public.jestas for update using (auth.uid() = author_id);
+
+-- offers
+create policy "offers_select_all" on public.offers for select using (true);
+create policy "offers_insert_auth" on public.offers for insert with check (auth.uid() = user_id);
+
+-- chat: participants only
+create policy "threads_select_part" on public.chat_threads for select using (auth.uid() = participant_a or auth.uid() = participant_b);
+create policy "threads_insert_part" on public.chat_threads for insert with check (auth.uid() = participant_a or auth.uid() = participant_b);
+create policy "messages_select_part" on public.messages for select using (
+  exists (select 1 from public.chat_threads t where t.id = thread_id and (t.participant_a = auth.uid() or t.participant_b = auth.uid()))
+);
+create policy "messages_insert_sender" on public.messages for insert with check (
+  auth.uid() = sender_id and exists (
+    select 1 from public.chat_threads t where t.id = thread_id and (t.participant_a = auth.uid() or t.participant_b = auth.uid())
+  )
+);
+
+-- reports: insert own
+create policy "reports_insert_own" on public.reports for insert with check (auth.uid() = reporter_id);
+
+-- Auto-create profile on auth.users insert (safe re-run)
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (id, name, avatar_url, verified_basic)
+  values (
+    new.id,
+    coalesce(
+      new.raw_user_meta_data->>'full_name',
+      new.raw_user_meta_data->>'name',
+      split_part(new.email, '@', 1),
+      'משתמש Google'
+    ),
+    coalesce(
+      new.raw_user_meta_data->>'avatar_url',
+      new.raw_user_meta_data->>'picture'
+    ),
+    true
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();

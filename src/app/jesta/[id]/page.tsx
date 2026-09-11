@@ -30,6 +30,7 @@ export default function JestaDetailPage() {
     offerHelp,
     getOrCreateThread,
     currentUserId,
+    submitReport,
   } = useStore();
   const [reportOpen, setReportOpen] = useState(false);
   const [offered, setOffered] = useState(false);
@@ -62,15 +63,15 @@ export default function JestaDetailPage() {
     );
   }
 
-  const onOffer = () => {
-    offerHelp(jesta.id);
+  const onOffer = async () => {
     setOffered(true);
-    const thread = getOrCreateThread(jesta.id, jesta.authorId);
+    await offerHelp(jesta.id);
+    const thread = await getOrCreateThread(jesta.id, jesta.authorId);
     router.push(`/chat/${thread.id}`);
   };
 
-  const openChatWithHelper = (helperId: string) => {
-    const thread = getOrCreateThread(jesta.id, helperId);
+  const openChatWithHelper = async (helperId: string) => {
+    const thread = await getOrCreateThread(jesta.id, helperId);
     router.push(`/chat/${thread.id}`);
   };
 
@@ -183,10 +184,15 @@ export default function JestaDetailPage() {
               type="button"
               onClick={() => {
                 if (alreadyOffered) {
-                  const thread = getOrCreateThread(jesta.id, jesta.authorId);
-                  router.push(`/chat/${thread.id}`);
+                  void (async () => {
+                    const thread = await getOrCreateThread(
+                      jesta.id,
+                      jesta.authorId
+                    );
+                    router.push(`/chat/${thread.id}`);
+                  })();
                 } else {
-                  onOffer();
+                  void onOffer();
                 }
               }}
               className="cta-coral"
@@ -215,7 +221,13 @@ export default function JestaDetailPage() {
       <ReportModal
         open={reportOpen}
         onClose={() => setReportOpen(false)}
-        onSubmit={() => {}}
+        onSubmit={(reason) => {
+          void submitReport({
+            jestaId: jesta.id,
+            reportedUserId: jesta.authorId,
+            reason,
+          });
+        }}
       />
     </div>
   );

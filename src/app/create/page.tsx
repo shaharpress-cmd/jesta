@@ -40,21 +40,26 @@ function CreateForm() {
   const canSubmit =
     description.trim().length >= 8 && location.trim().length > 0;
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
-    const title =
-      description.trim().length > 40
-        ? description.trim().slice(0, 40) + "…"
-        : description.trim();
-    const j = createJesta({
-      title,
-      description: description.trim(),
-      category,
-      locationLabel: location.trim(),
-      urgency,
-    });
-    router.push(`/jesta/${j.id}`);
+    try {
+      const title =
+        description.trim().length > 40
+          ? description.trim().slice(0, 40) + "…"
+          : description.trim();
+      const j = await createJesta({
+        title,
+        description: description.trim(),
+        category,
+        locationLabel: location.trim(),
+        urgency,
+      });
+      router.push(`/jesta/${j.id}`);
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
+    }
   };
 
   return (

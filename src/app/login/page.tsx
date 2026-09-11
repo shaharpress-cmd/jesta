@@ -93,9 +93,9 @@ export default function LoginPage() {
     router.push("/");
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!accepted) return;
-    completeOnboarding({
+    await completeOnboarding({
       displayName: displayName.trim() || "משתמש Google",
       acceptedTerms: true,
     });
