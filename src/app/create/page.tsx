@@ -8,6 +8,7 @@ import { CategoryPills } from "@/components/CategoryPills";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { CreateCategoryTips } from "@/components/CreateCategoryTips";
 import { useStore } from "@/lib/store";
+import { isSupabaseConfigured } from "@/lib/supabase/client";
 import type { CategoryId, Urgency } from "@/lib/types";
 import { TIP_BY_ID } from "@/lib/tips";
 import { cn } from "@/lib/utils";
@@ -20,15 +21,31 @@ const URGENCY: { id: Urgency; label: string; icon: typeof Zap }[] = [
 
 const VALID_IDS = new Set(Object.keys(TIP_BY_ID));
 
+function createErrorMessage(err: unknown): string {
+  const raw = err instanceof Error ? err.message : String(err ?? "");
+  if (
+    raw === "CLOUD_NOT_READY" ||
+    raw === "SESSION_NOT_SYNCED" ||
+    /JWT|RLS|row-level|policy|author/i.test(raw)
+  ) {
+    return "עדיין מסנכרנים את החשבון. המתינו רגע ונסו שוב.";
+  }
+  return "לא הצלחנו לפרסם את הג׳סטה. נסו שוב בעוד רגע.";
+}
+
 function CreateForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { createJesta } = useStore();
+  const { createJesta, cloudReady } = useStore();
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryId>("fuel");
   const [location, setLocation] = useState("תל אביב, אזור איילון");
   const [urgency, setUrgency] = useState<Urgency>("now");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // When Supabase is configured, wait for session sync before allowing publish.
+  const waitingForCloud = isSupabaseConfigured() && !cloudReady;
 
   useEffect(() => {
     const raw = searchParams.get("category");
@@ -38,12 +55,18 @@ function CreateForm() {
   }, [searchParams]);
 
   const canSubmit =
-    description.trim().length >= 8 && location.trim().length > 0;
+    description.trim().length >= 8 &&
+    location.trim().length > 0 &&
+    !waitingForCloud;
 
   const onSubmit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
+    setError(null);
     try {
+      if (isSupabaseConfigured() && !cloudReady) {
+        throw new Error("CLOUD_NOT_READY");
+      }
       const title =
         description.trim().length > 40
           ? description.trim().slice(0, 40) + "…"
@@ -58,9 +81,36 @@ function CreateForm() {
       router.push(`/jesta/${j.id}`);
     } catch (e) {
       console.error(e);
+      setError(createErrorMessage(e));
       setSubmitting(false);
     }
   };
+
+  if (waitingForCloud) {
+    return (
+      <div className="min-h-dvh">
+        <Header
+          title="בקשת ג׳סטה"
+          showBack
+          backHref="/"
+          showBell={false}
+          showMenu={false}
+        />
+        <div className="px-4 py-16 text-center space-y-3">
+          <div
+            className="mx-auto h-10 w-10 rounded-full border-2 border-coral/30 border-t-coral animate-spin"
+            aria-hidden
+          />
+          <p className="text-sm font-medium text-charcoal">
+            מסנכרנים את החשבון…
+          </p>
+          <p className="text-xs text-charcoal-muted leading-relaxed max-w-xs mx-auto">
+            רגע קטן אחרי ההתחברות — ואז אפשר לפרסם בשקט.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh">
@@ -74,7 +124,10 @@ function CreateForm() {
           <div className="relative">
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                if (error) setError(null);
+              }}
               rows={4}
               placeholder="ספרו לנו במה אפשר לעזור..."
               className="input-soft w-full p-4 resize-none min-h-[7.5rem]"
@@ -140,13 +193,22 @@ function CreateForm() {
 
         <SafetyBanner variant="tip" />
 
+        {error && (
+          <div
+            role="alert"
+            className="rounded-2xl border border-coral/25 bg-coral-soft/60 px-4 py-3 text-sm text-charcoal leading-relaxed"
+          >
+            {error}
+          </div>
+        )}
+
         <button
           type="button"
           disabled={!canSubmit || submitting}
           onClick={onSubmit}
           className="cta-coral"
         >
-          פרסם ג׳סטה
+          {submitting ? "מפרסמים…" : "פרסם ג׳סטה"}
           <ArrowLeft className="h-5 w-5" />
         </button>
 

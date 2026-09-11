@@ -249,29 +249,46 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const supabase = createClient();
     const name = displayNameFromAuth(authUser);
     const avatar_url = avatarFromAuth(authUser);
+    const now = new Date().toISOString();
+
+    // Prefer existing row so we do not overwrite display name / terms.
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", authUser.id)
+      .maybeSingle();
+
+    if (existing) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          last_seen_at: now,
+          avatar_url:
+            (existing as ProfileRow).avatar_url || avatar_url,
+        })
+        .eq("id", authUser.id)
+        .select("*")
+        .single();
+      if (error) {
+        console.error("profile update:", error.message);
+        return profileToUser(existing as ProfileRow);
+      }
+      return profileToUser(data as ProfileRow);
+    }
+
     const { data, error } = await supabase
       .from("profiles")
-      .upsert(
-        {
-          id: authUser.id,
-          name,
-          avatar_url,
-          verified_basic: true,
-          last_seen_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      )
+      .insert({
+        id: authUser.id,
+        name,
+        avatar_url,
+        verified_basic: true,
+        last_seen_at: now,
+      })
       .select("*")
       .single();
     if (error) {
-      console.error("profile upsert:", error.message);
-      // Fallback: try select existing
-      const { data: existing } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", authUser.id)
-        .maybeSingle();
-      if (existing) return profileToUser(existing as ProfileRow);
+      console.error("profile insert:", error.message);
       return {
         id: authUser.id,
         name,
@@ -488,7 +505,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         const supabase = createClient();
         const { error } = await supabase
           .from("profiles")
-          .update({ name })
+          .update({ name, terms_accepted_at: acceptedTermsAt })
           .eq("id", currentUserId);
         if (error) console.error("onboarding profile update:", error.message);
       }
@@ -504,14 +521,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const createJesta = useCallback(
     async (input: CreateJestaInput): Promise<Jesta> => {
       if (isCloud) {
+        if (!cloudReady) {
+          throw new Error("CLOUD_NOT_READY");
+        }
         const supabase = createClient();
+        const authorId = session?.user?.id ?? currentUserId;
+        if (!session?.user?.id || authorId.startsWith("u-")) {
+          throw new Error("SESSION_NOT_SYNCED");
+        }
         const { data, error } = await supabase
           .from("jestas")
           .insert({
             title: input.title,
             description: input.description,
             category: input.category,
-            author_id: currentUserId,
+            author_id: authorId,
             location_label: input.locationLabel,
             lat: 32.08,
             lng: 34.78,
@@ -548,7 +572,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setJestas((prev) => [j, ...prev]);
       return j;
     },
-    [currentUserId, isCloud]
+    [currentUserId, isCloud, cloudReady, session]
   );
 
   const offerHelp = useCallback(

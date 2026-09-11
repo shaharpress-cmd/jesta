@@ -27,6 +27,7 @@ export type ProfileRow = {
   avg_response_min: number | null;
   help_categories: CategoryId[] | null;
   last_seen_at: string | null;
+  terms_accepted_at: string | null;
 };
 
 export type JestaRow = {
@@ -105,6 +106,7 @@ export function profileToUser(row: ProfileRow): User {
     helpCategories: row.help_categories ?? [],
     lastActive: online ? "עכשיו" : undefined,
     authProvider: "google",
+    acceptedTermsAt: row.terms_accepted_at ?? undefined,
   };
 }
 

@@ -1,13 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Avatar } from "@/components/Avatar";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { useStore } from "@/lib/store";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import {
+  isDefaultDisplayName,
+  needsProfileOnboarding,
+} from "@/lib/utils";
 
 type Step = "auth" | "onboarding";
 
@@ -34,26 +38,63 @@ function GoogleMark({ className }: { className?: string }) {
   );
 }
 
-export default function LoginPage() {
+function LoginInner() {
   const {
     users,
     currentUserId,
     currentUser,
+    cloudReady,
+    isCloud,
     signInWithGoogle,
     signInAsDemo,
     completeOnboarding,
   } = useStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("auth");
   const [displayName, setDisplayName] = useState("");
   const [accepted, setAccepted] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [onboardingReady, setOnboardingReady] = useState(false);
 
   const seedUsers = useMemo(
     () => users.filter((u) => u.id !== "u-google"),
     [users]
   );
+
+  // After OAuth callback (?onboarding=1), open «כמעט שם» once cloud session synced.
+  useEffect(() => {
+    const wantOnboarding = searchParams.get("onboarding") === "1";
+    if (!wantOnboarding) {
+      setOnboardingReady(true);
+      return;
+    }
+    if (!cloudReady) return;
+
+    if (isCloud && currentUser) {
+      if (
+        needsProfileOnboarding({
+          name: currentUser.name,
+          acceptedTermsAt: currentUser.acceptedTermsAt,
+        })
+      ) {
+        setDisplayName(
+          isDefaultDisplayName(currentUser.name) ? "" : currentUser.name
+        );
+        setAccepted(Boolean(currentUser.acceptedTermsAt));
+        setStep("onboarding");
+      } else {
+        // Already completed — skip to home
+        router.replace("/");
+        return;
+      }
+    } else if (cloudReady && !isCloud) {
+      // Session missing after callback — stay on auth
+      setStep("auth");
+    }
+    setOnboardingReady(true);
+  }, [searchParams, cloudReady, isCloud, currentUser, router]);
 
   const handleGoogle = async () => {
     setBusy(true);
@@ -95,12 +136,48 @@ export default function LoginPage() {
 
   const handleStart = async () => {
     if (!accepted) return;
-    await completeOnboarding({
-      displayName: displayName.trim() || "משתמש Google",
-      acceptedTerms: true,
-    });
-    router.push("/");
+    setBusy(true);
+    try {
+      await completeOnboarding({
+        displayName: displayName.trim() || "משתמש Google",
+        acceptedTerms: true,
+      });
+      router.push("/");
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const waitingForOnboardingGate =
+    searchParams.get("onboarding") === "1" &&
+    (!cloudReady || !onboardingReady) &&
+    step === "auth";
+
+  if (waitingForOnboardingGate) {
+    return (
+      <div className="min-h-[calc(100dvh-0px)] flex flex-col">
+        <Header
+          title="כמעט שם"
+          showBack
+          backHref="/profile"
+          showBell={false}
+          showMenu={false}
+        />
+        <div className="flex-1 px-5 pb-8 flex flex-col items-center justify-center text-center gap-3">
+          <div
+            className="h-10 w-10 rounded-full border-2 border-coral/30 border-t-coral animate-spin"
+            aria-hidden
+          />
+          <p className="text-sm font-medium text-charcoal">
+            מסנכרנים את החשבון…
+          </p>
+          <p className="text-xs text-charcoal-muted max-w-xs leading-relaxed">
+            עוד רגע נשלים את הפרטים הקצרים.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100dvh-0px)] flex flex-col">
@@ -226,7 +303,7 @@ export default function LoginPage() {
                   איך לקרוא לך?
                 </h2>
                 <p className="mt-1 text-xs text-charcoal-muted">
-                  שלב אופציונלי — אפשר לשנות אחר כך בפרופיל
+                  שלב קצר — שם ותנאי שימוש, ואפשר להמשיך
                 </p>
               </div>
 
@@ -264,7 +341,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleStart}
-                disabled={!accepted}
+                disabled={!accepted || busy}
                 className="cta-coral"
               >
                 בואו נתחיל
@@ -284,5 +361,19 @@ export default function LoginPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-dvh px-5 py-16 text-center text-sm text-charcoal-muted">
+          טוען…
+        </div>
+      }
+    >
+      <LoginInner />
+    </Suspense>
   );
 }

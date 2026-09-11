@@ -24,6 +24,7 @@ create table public.profiles (
   avg_response_min int default 0,
   help_categories category_id[] default '{}',
   last_seen_at timestamptz default now(),
+  terms_accepted_at timestamptz,
   created_at timestamptz default now()
 );
 

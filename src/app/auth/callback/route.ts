@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { needsProfileOnboarding } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -19,17 +20,31 @@ export async function GET(request: Request) {
       const avatar_url =
         (meta.avatar_url as string) || (meta.picture as string) || null;
 
-      // Ensure profiles row exists (trigger may also insert)
-      await supabase.from("profiles").upsert(
-        {
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("name, terms_accepted_at")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      if (!existing) {
+        await supabase.from("profiles").insert({
           id: data.user.id,
           name,
           avatar_url,
           verified_basic: true,
           last_seen_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      );
+        });
+      } else {
+        await supabase
+          .from("profiles")
+          .update({ last_seen_at: new Date().toISOString() })
+          .eq("id", data.user.id);
+      }
+
+      const profile = existing ?? { name, terms_accepted_at: null };
+      if (needsProfileOnboarding(profile)) {
+        return NextResponse.redirect(`${origin}/login?onboarding=1`);
+      }
 
       return NextResponse.redirect(`${origin}${next}`);
     }
