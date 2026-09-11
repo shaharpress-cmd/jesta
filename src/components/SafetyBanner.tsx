@@ -18,7 +18,9 @@ export function SafetyBanner({
         )}
       >
         <Heart className="mt-0.5 h-3.5 w-3.5 shrink-0 text-coral/60" />
-        <span>{SAFETY.intermediary}</span>
+        <span>
+          {SAFETY.tipsDisclaimer} {SAFETY.intermediary}
+        </span>
       </p>
     );
   }

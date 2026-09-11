@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useRef } from "react";
+import Link from "next/link";
 import { Search } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CategoryPills } from "@/components/CategoryPills";
@@ -80,6 +81,16 @@ export default function HomePage() {
               <JestaCard key={j.id} jesta={j} author={getUser(j.authorId)} />
             ))
           )}
+        </div>
+
+        <div className="flex justify-center pt-2">
+          <Link
+            href="/טיפים"
+            className="inline-flex items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm"
+          >
+            טיפים
+            <span className="text-charcoal-light font-medium">· מדריכים לשכנים</span>
+          </Link>
         </div>
 
         <SafetyBanner variant="footer" className="justify-center px-2 py-4" />

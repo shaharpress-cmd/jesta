@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { MapPin, Pencil, Zap, Calendar, Clock, ArrowLeft } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CategoryPills } from "@/components/CategoryPills";
 import { SafetyBanner } from "@/components/SafetyBanner";
+import { CreateCategoryTips } from "@/components/CreateCategoryTips";
 import { useStore } from "@/lib/store";
 import type { CategoryId, Urgency } from "@/lib/types";
+import { TIP_BY_ID } from "@/lib/tips";
 import { cn } from "@/lib/utils";
 
 const URGENCY: { id: Urgency; label: string; icon: typeof Zap }[] = [
@@ -16,14 +18,24 @@ const URGENCY: { id: Urgency; label: string; icon: typeof Zap }[] = [
   { id: "flexible", label: "גמיש", icon: Clock },
 ];
 
-export default function CreatePage() {
+const VALID_IDS = new Set(Object.keys(TIP_BY_ID));
+
+function CreateForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { createJesta } = useStore();
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryId>("fuel");
   const [location, setLocation] = useState("תל אביב, אזור איילון");
   const [urgency, setUrgency] = useState<Urgency>("now");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const raw = searchParams.get("category");
+    if (raw && VALID_IDS.has(raw)) {
+      setCategory(raw as CategoryId);
+    }
+  }, [searchParams]);
 
   const canSubmit =
     description.trim().length >= 8 && location.trim().length > 0;
@@ -72,11 +84,15 @@ export default function CreatePage() {
           </label>
           <CategoryPills
             selected={category}
-            onSelect={(id) => { if (id !== "all") setCategory(id); }}
+            onSelect={(id) => {
+              if (id !== "all") setCategory(id);
+            }}
             showAll={false}
             compact
           />
         </div>
+
+        <CreateCategoryTips category={category} />
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-charcoal">
@@ -134,5 +150,20 @@ export default function CreatePage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function CreatePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-dvh">
+          <Header title="בקשת ג׳סטה" showBack backHref="/" showBell={false} showMenu={false} />
+          <div className="px-4 py-8 text-sm text-charcoal-muted">טוען…</div>
+        </div>
+      }
+    >
+      <CreateForm />
+    </Suspense>
   );
 }
