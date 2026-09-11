@@ -64,7 +64,17 @@ export function Header({
             href="/"
             className="absolute inset-x-14 flex flex-col items-center justify-center pointer-events-auto rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/30"
           >
-            <Wordmark size="md" bilingual bilingualPlacement="beside" />
+            <span className="inline-flex items-center gap-1.5">
+              <img
+                src="/jesti/hand-accent.png"
+                alt=""
+                width={22}
+                height={22}
+                className="pointer-events-none select-none h-[22px] w-[22px] object-contain opacity-90"
+                aria-hidden
+              />
+              <Wordmark size="md" bilingual bilingualPlacement="beside" />
+            </span>
             {location && (
               <span className="mt-0.5 text-[11px] sm:text-xs font-medium text-charcoal-muted truncate max-w-full">
                 {location}

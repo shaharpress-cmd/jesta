@@ -738,6 +738,22 @@ body {
 .jesti-buddy {
   flex-shrink: 0;
 }
+.jesti-caption {
+  display: inline-flex;
+  align-items: center;
+  max-width: 9.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid #3D405B;
+  color: #3D405B;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  box-shadow: 0 1px 0 rgba(61, 64, 91, 0.08);
+  white-space: nowrap;
+}
 .jesti-svg {
   display: block;
   transform-origin: 50% 70%;
