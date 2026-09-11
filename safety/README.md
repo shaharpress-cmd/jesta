@@ -34,6 +34,10 @@
 | [04-spam-impersonation.md](./04-spam-impersonation.md) | ספאם, התחזות, מה שיווק לא אומר | מוצר, שיווק, בטיחות |
 | [05-product-handoff.md](./05-product-handoff.md) | מסכים, שדות, MVP מול אחר כך | מוצר / פיתוח |
 
+| [06-mvp-report-block.md](./06-mvp-report-block.md) | תמצית דיווח/חסימה ל-MVP (למנהלת) | ג'סטה, מוצר |
+| [07-safety-tips-screens.md](./07-safety-tips-screens.md) | טיפים למסכי create/chat/detail | מוצר |
+| [08-forbidden-categories.md](./08-forbidden-categories.md) | קטגוריות אסורות / אדומות | מוצר, מודרציה |
+
 ## איך להשתמש עם סוכנים
 
 ### סוכן מוצר
