@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-/** Chip clarifying demo/local vs real Google session. */
+/** Chip clarifying demo/local vs real Google session. Never both at once. */
 export function SessionModeChip({
   className,
   compact = false,
@@ -12,7 +12,7 @@ export function SessionModeChip({
   className?: string;
   compact?: boolean;
 }) {
-  const { storeReady, isLoggedIn, isCloud, currentUser } = useStore();
+  const { storeReady, isLoggedIn, isDemoSession, currentUser } = useStore();
 
   if (!storeReady) return null;
 
@@ -39,12 +39,8 @@ export function SessionModeChip({
     );
   }
 
-  const isDemo =
-    !isCloud ||
-    currentUser.authProvider === "demo" ||
-    currentUser.authProvider === "google-stub";
-
-  if (isDemo) {
+  // Demo / local / google-stub → amber only. Real cloud Google → sage only.
+  if (isDemoSession) {
     return (
       <div
         className={cn(

@@ -71,6 +71,10 @@ interface StoreState {
   storeReady: boolean;
   /** True after intentional Google / demo / stub sign-in (not bare seed user). */
   isLoggedIn: boolean;
+  /** Demo / local / google-stub — never present as live Google. */
+  isDemoSession: boolean;
+  /** Explicit local override even if a Supabase cookie exists. */
+  forceLocal: boolean;
   setCurrentUserId: (id: string) => void;
   setRadius: (r: RadiusPreset) => void;
   setOnlineOnly: (v: boolean) => void;
@@ -191,9 +195,32 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         // Only restore entity state when staying on demo path
         if (!isSupabaseConfigured() || parsed.forceLocal) {
           if (parsed.forceLocal) setForceLocal(true);
-          if (parsed.currentUserId) setCurrentUserId(parsed.currentUserId);
+          const restoredId: string | undefined = parsed.currentUserId;
+          if (restoredId) setCurrentUserId(restoredId);
           if (Array.isArray(parsed.users) && parsed.users.length) {
-            setUsers(parsed.users);
+            // Ensure demo/stub users always carry authProvider so chips hit demo branch
+            const patched = parsed.users.map((u: User) => {
+              if (u.authProvider === "demo" || u.authProvider === "google-stub" || u.authProvider === "google") {
+                return u;
+              }
+              if (u.id === "u-google") {
+                return { ...u, authProvider: "google-stub" as const };
+              }
+              if (parsed.forceLocal && restoredId && u.id === restoredId) {
+                return { ...u, authProvider: "demo" as const };
+              }
+              return u;
+            });
+            setUsers(patched);
+          } else if (parsed.forceLocal && restoredId) {
+            // No users blob — still mark the active seed as demo
+            setUsers((prev) =>
+              prev.map((u) =>
+                u.id === restoredId && !u.authProvider
+                  ? { ...u, authProvider: "demo" as const }
+                  : u
+              )
+            );
           }
           if (parsed.jestas) setJestas(parsed.jestas);
           if (parsed.offers) setOffers(parsed.offers);
@@ -806,6 +833,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       currentUser.authProvider === "demo"
   );
 
+  const isDemoSession = Boolean(
+    isLoggedIn &&
+      (forceLocal ||
+        !isCloud ||
+        currentUser.authProvider === "demo" ||
+        currentUser.authProvider === "google-stub")
+  );
+
   const storeReady = hydrated && cloudReady;
 
   const value: StoreState = {
@@ -821,6 +856,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     cloudReady,
     storeReady,
     isLoggedIn,
+    isDemoSession,
+    forceLocal,
     setCurrentUserId,
     setRadius,
     setOnlineOnly,

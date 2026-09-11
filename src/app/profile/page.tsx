@@ -32,7 +32,8 @@ const TAG_STYLES = [
 
 function ProfileInner() {
   const params = useSearchParams();
-  const { currentUser, getUser, currentUserId } = useStore();
+  const { currentUser, getUser, currentUserId, isDemoSession, isCloud } =
+    useStore();
   const uid = params.get("u");
   const user = uid ? getUser(uid) ?? currentUser : currentUser;
   const isMe = user.id === currentUserId;
@@ -223,17 +224,19 @@ function ProfileInner() {
               חשבון
             </h2>
             <p className="text-xs text-charcoal-muted">
-              {currentUser.authProvider === "google-stub"
-                ? "מחובר דרך Google (סימולציה)"
-                : currentUser.authProvider === "demo"
-                  ? "מצב דמו"
+              {isDemoSession
+                ? "מצב דמו — לא חשבון Google חי. להתחברות אמיתית בחרו Google במסך ההתחברות."
+                : isCloud
+                  ? "חשבון Google"
                   : "התחברות עם Google · מצב דמו זמין לבדיקות"}
             </p>
             <Link
               href="/login"
               className="cta-coral !py-3 text-sm"
             >
-              התחברות / החלפת חשבון
+              {isDemoSession
+                ? "מצב דמו · התחברות עם Google"
+                : "התחברות / החלפת חשבון"}
             </Link>
           </section>
         )}

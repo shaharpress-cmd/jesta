@@ -11,7 +11,6 @@ import {
   Users,
   MessageCircle,
   ShieldCheck,
-  LogIn,
   Share2,
   Check,
 } from "lucide-react";
@@ -182,11 +181,9 @@ export default function JestaDetailPage() {
 
   const primaryLabel = busy
     ? "רגע…"
-    : !isLoggedIn
-      ? "התחברות כדי לעזור"
-      : alreadyOffered
-        ? "המשך בצ׳אט"
-        : "אני יכול/ה לעזור";
+    : alreadyOffered
+      ? "המשך בצ׳אט"
+      : "אני יכול/ה לעזור";
 
   return (
     <>
@@ -214,15 +211,9 @@ export default function JestaDetailPage() {
                 רוצים להציע עזרה?
               </p>
               <p className="mt-1 text-[13px] leading-relaxed text-charcoal/80">
-                התחברו כדי להציע עזרה או לשלוח הודעה — הכפתור למטה תמיד זמין.
+                לחצו «אני יכול/ה לעזור» למטה — נעביר אתכם להתחברות ואז חזרה לכאן.
+                אפשר גם לשלוח הודעה אחרי התחברות.
               </p>
-              <Link
-                href={loginNext}
-                className="mt-3 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-coral px-4 py-2 text-sm font-bold text-white shadow-sm touch-manipulation"
-              >
-                <LogIn className="h-4 w-4" />
-                התחברות
-              </Link>
             </div>
           )}
 
@@ -396,16 +387,14 @@ export default function JestaDetailPage() {
                     )}
                     {copied ? "הקישור הועתק" : "שתפו / העתיקו קישור"}
                   </button>
-                  {helpers.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={scrollToHelpers}
-                      className="btn-pressable flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full border border-charcoal/10 bg-white px-4 text-sm font-semibold text-charcoal sm:!w-auto sm:min-w-[10.5rem] sm:shrink-0"
-                    >
-                      <Users className="h-4 w-4 text-coral" />
-                      ראו מי הציע ({helpers.length})
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={scrollToHelpers}
+                    className="btn-pressable flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full border border-charcoal/10 bg-white px-4 text-sm font-semibold text-charcoal sm:!w-auto sm:min-w-[10.5rem] sm:shrink-0"
+                  >
+                    <Users className="h-4 w-4 text-coral" />
+                    ראו מי הציע ({helpers.length})
+                  </button>
                 </div>
               </div>
             ) : (
@@ -416,9 +405,7 @@ export default function JestaDetailPage() {
                   onClick={() => void onOffer()}
                   className="cta-coral !min-h-[3.25rem] text-[16px] shadow-fab"
                 >
-                  {!isLoggedIn ? (
-                    <LogIn className="h-5 w-5" />
-                  ) : alreadyOffered ? (
+                  {alreadyOffered ? (
                     <MessageCircle className="h-5 w-5" />
                   ) : (
                     <Heart className="h-5 w-5" fill="currentColor" />

@@ -29,7 +29,7 @@ export function AppMenu({
   open: boolean;
   onClose: () => void;
 }) {
-  const { isLoggedIn } = useStore();
+  const { isLoggedIn, isDemoSession } = useStore();
   const titleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [shown, setShown] = useState(open);
@@ -64,9 +64,15 @@ export function AppMenu({
 
   if (!shown) return null;
 
-  const account = isLoggedIn
-    ? { href: "/profile", label: "פרופיל", icon: UserRound }
-    : { href: "/login", label: "התחברות / הרשמה", icon: LogIn };
+  const account = !isLoggedIn
+    ? { href: "/login", label: "התחברות / הרשמה", icon: LogIn }
+    : isDemoSession
+      ? {
+          href: "/login",
+          label: "מצב דמו · התחברות עם Google",
+          icon: LogIn,
+        }
+      : { href: "/profile", label: "פרופיל", icon: UserRound };
 
   return (
     <div className="fixed inset-0 z-[80]" role="presentation">
