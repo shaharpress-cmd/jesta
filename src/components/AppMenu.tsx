@@ -69,7 +69,7 @@ export function AppMenu({
     : { href: "/login", label: "התחברות / הרשמה", icon: LogIn };
 
   return (
-    <div className="fixed inset-0 z-[70]" role="presentation">
+    <div className="fixed inset-0 z-[80]" role="presentation">
       <button
         type="button"
         aria-label="סגירת תפריט"
@@ -118,7 +118,7 @@ export function AppMenu({
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 pb-4 pt-1">
+        <nav className="flex-1 overflow-y-auto px-3 pb-6 pt-1 pb-safe">
           <ul className="space-y-1">
             {LINKS.map(({ href, label, icon: Icon }) => (
               <li key={href}>

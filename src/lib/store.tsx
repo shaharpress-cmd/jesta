@@ -67,6 +67,8 @@ interface StoreState {
   /** True when Supabase session is active and data is cloud-backed */
   isCloud: boolean;
   cloudReady: boolean;
+  /** True after localStorage hydrate + cloud session settle — safe for notFound. */
+  storeReady: boolean;
   /** True after intentional Google / demo / stub sign-in (not bare seed user). */
   isLoggedIn: boolean;
   setCurrentUserId: (id: string) => void;
@@ -785,6 +787,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       currentUser.authProvider === "demo"
   );
 
+  const storeReady = hydrated && cloudReady;
+
   const value: StoreState = {
     currentUserId,
     jestas,
@@ -796,6 +800,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     users,
     isCloud,
     cloudReady,
+    storeReady,
     isLoggedIn,
     setCurrentUserId,
     setRadius,

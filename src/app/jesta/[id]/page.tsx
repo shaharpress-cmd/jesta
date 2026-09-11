@@ -35,7 +35,7 @@ export default function JestaDetailPage() {
     getOrCreateThread,
     currentUserId,
     submitReport,
-    cloudReady,
+    storeReady,
     isLoggedIn,
   } = useStore();
   const [reportOpen, setReportOpen] = useState(false);
@@ -63,7 +63,8 @@ export default function JestaDetailPage() {
   const isOwn = !!jesta && jesta.authorId === currentUserId;
   const showHelpBar = !!jesta && !isOwn;
 
-  if (!cloudReady) {
+  // P0: never flash «לא נמצאה» before hydrate/cloud/users resolve
+  if (!storeReady || (jesta && (!cat || !author))) {
     return (
       <PageFrame>
         <Header showBack backHref="/" showBell={false} title="ג׳סטה" />
@@ -72,7 +73,7 @@ export default function JestaDetailPage() {
     );
   }
 
-  if (!jesta || !cat || !author) {
+  if (!jesta) {
     return (
       <PageFrame>
         <Header showBack backHref="/" showBell={false} title="ג׳סטה" />
@@ -87,6 +88,16 @@ export default function JestaDetailPage() {
             secondaryLabel="לידך"
           />
         </div>
+      </PageFrame>
+    );
+  }
+
+  // Narrow for TS after guards
+  if (!cat || !author) {
+    return (
+      <PageFrame>
+        <Header showBack backHref="/" showBell={false} title="ג׳סטה" />
+        <DetailSkeleton />
       </PageFrame>
     );
   }
@@ -291,7 +302,7 @@ export default function JestaDetailPage() {
       </div>
 
       {showHelpBar && (
-        <div className="fixed bottom-0 inset-x-0 z-50 mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl">
+        <div className="fixed bottom-0 inset-x-0 z-[60] mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl">
           <div className="border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <button

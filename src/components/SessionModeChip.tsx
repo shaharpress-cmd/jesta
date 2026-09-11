@@ -12,9 +12,9 @@ export function SessionModeChip({
   className?: string;
   compact?: boolean;
 }) {
-  const { cloudReady, isLoggedIn, isCloud, currentUser } = useStore();
+  const { storeReady, isLoggedIn, isCloud, currentUser } = useStore();
 
-  if (!cloudReady) return null;
+  if (!storeReady) return null;
 
   if (!isLoggedIn) {
     return (

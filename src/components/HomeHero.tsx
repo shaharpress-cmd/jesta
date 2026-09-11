@@ -6,9 +6,9 @@ import { useStore } from "@/lib/store";
 const MARKS = ["🤝", "📍", "✨"] as const;
 
 export function HomeHero() {
-  const { isLoggedIn, cloudReady } = useStore();
-  const loggedIn = cloudReady && isLoggedIn;
-  const waiting = !cloudReady;
+  const { isLoggedIn, storeReady } = useStore();
+  const loggedIn = storeReady && isLoggedIn;
+  const waiting = !storeReady;
 
   return (
     <section

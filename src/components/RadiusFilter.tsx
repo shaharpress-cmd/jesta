@@ -3,6 +3,7 @@
 import { RADIUS_OPTIONS } from "@/lib/categories";
 import type { RadiusPreset } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ChipRail } from "@/components/ChipRail";
 
 export function RadiusFilter({
   value,
@@ -12,13 +13,14 @@ export function RadiusFilter({
   onChange: (v: RadiusPreset) => void;
 }) {
   return (
-    <div className="flex min-h-11 gap-2 overflow-x-auto scrollbar-hide py-0.5 -mx-1 px-1">
+    <ChipRail selectedKey={value}>
       {RADIUS_OPTIONS.map((opt) => {
         const active = value === opt.id;
         return (
           <button
             key={opt.id}
             type="button"
+            data-chip-active={active ? "true" : undefined}
             onClick={() => onChange(opt.id)}
             className={cn(active ? "chip-active" : "chip-inactive")}
           >
@@ -26,6 +28,6 @@ export function RadiusFilter({
           </button>
         );
       })}
-    </div>
+    </ChipRail>
   );
 }

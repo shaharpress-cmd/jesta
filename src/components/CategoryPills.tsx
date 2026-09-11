@@ -15,6 +15,7 @@ import {
 import { CATEGORIES } from "@/lib/categories";
 import type { CategoryId } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ChipRail } from "@/components/ChipRail";
 
 const ICONS: Record<CategoryId, LucideIcon> = {
   fuel: Fuel,
@@ -40,10 +41,11 @@ export function CategoryPills({
   compact?: boolean;
 }) {
   return (
-    <div className="flex min-h-11 gap-2 overflow-x-auto scrollbar-hide py-0.5 -mx-1 px-1">
+    <ChipRail selectedKey={selected ?? "all"}>
       {showAll && (
         <button
           type="button"
+          data-chip-active={selected === "all" ? "true" : undefined}
           onClick={() => onSelect("all")}
           className={cn(selected === "all" ? "chip-active" : "chip-inactive")}
         >
@@ -57,6 +59,7 @@ export function CategoryPills({
           <button
             key={c.id}
             type="button"
+            data-chip-active={active ? "true" : undefined}
             onClick={() => onSelect(c.id)}
             className={cn(active ? "chip-active" : "chip-inactive")}
           >
@@ -68,6 +71,6 @@ export function CategoryPills({
           </button>
         );
       })}
-    </div>
+    </ChipRail>
   );
 }

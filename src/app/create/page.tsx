@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MapPin, Pencil, Zap, Calendar, Clock, ArrowLeft, Check } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -37,7 +38,7 @@ function createErrorMessage(err: unknown): string {
 function CreateForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { createJesta, cloudReady } = useStore();
+  const { createJesta, cloudReady, storeReady, isLoggedIn } = useStore();
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryId>("fuel");
   const [location, setLocation] = useState("תל אביב, אזור איילון");
@@ -92,7 +93,7 @@ function CreateForm() {
     }
   };
 
-  if (waitingForCloud) {
+  if (waitingForCloud || !storeReady) {
     return (
       <PageFrame>
         <Header
@@ -102,17 +103,32 @@ function CreateForm() {
           showBell={false}
           showMenu={false}
         />
-        <div className="page-pad py-16 text-center space-y-3">
+        <div className="page-pad py-16 text-center space-y-4 max-w-sm mx-auto">
           <div
             className="mx-auto h-10 w-10 rounded-full border-2 border-coral/30 border-t-coral animate-spin"
             aria-hidden
           />
-          <p className="text-sm font-medium text-charcoal">
-            מסנכרנים את החשבון…
-          </p>
-          <p className="text-xs text-charcoal-muted leading-relaxed max-w-xs mx-auto">
-            רגע קטן אחרי ההתחברות — ואז אפשר לפרסם בשקט.
-          </p>
+          <div className="space-y-2">
+            <p className="text-base font-bold text-charcoal">
+              {isLoggedIn ? "מסנכרנים את החשבון…" : "מכינים את טופס הפרסום…"}
+            </p>
+            <p className="text-sm text-charcoal-muted leading-relaxed">
+              {isLoggedIn
+                ? "רגע קטן אחרי ההתחברות — ואז אפשר לפרסם בשקט."
+                : "אם זה לוקח יותר מדי, התחברו ואז חזרו לפרסום."}
+            </p>
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-charcoal/[0.08]">
+            <div className="h-full w-2/5 rounded-full bg-coral/80 animate-pulse" />
+          </div>
+          {!isLoggedIn && (
+            <Link
+              href="/login?next=/create"
+              className="btn-pressable inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-6 text-sm font-bold text-white shadow-soft"
+            >
+              התחברות כדי לפרסם
+            </Link>
+          )}
         </div>
       </PageFrame>
     );

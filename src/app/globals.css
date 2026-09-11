@@ -34,6 +34,48 @@ body {
   display: none;
 }
 
+/* Horizontal chip rails — edge fades + scroll affordance */
+.chip-rail {
+  position: relative;
+}
+.chip-rail-scroller {
+  scroll-padding-inline: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+.chip-rail-fade {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.75rem;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.chip-rail-fade.is-visible {
+  opacity: 1;
+}
+.chip-rail-fade-start {
+  inset-inline-start: 0;
+  background: linear-gradient(to left, transparent, rgba(247, 241, 234, 0.95));
+}
+.chip-rail-fade-end {
+  inset-inline-end: 0;
+  background: linear-gradient(to right, transparent, rgba(247, 241, 234, 0.95));
+}
+.filter-frost .chip-rail-fade-start {
+  background: linear-gradient(to left, transparent, rgba(247, 241, 234, 0.92));
+}
+.filter-frost .chip-rail-fade-end {
+  background: linear-gradient(to right, transparent, rgba(247, 241, 234, 0.92));
+}
+@media (prefers-reduced-motion: reduce) {
+  .chip-rail-fade {
+    transition: none;
+  }
+}
+
+
 .pb-safe {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
@@ -86,6 +128,11 @@ body {
     @apply px-4 sm:px-6 lg:px-8;
   }
 
+  .page-frame {
+    min-height: 100%;
+    padding-bottom: 0.5rem;
+  }
+
   .feed-grid {
     @apply grid grid-cols-1 gap-5;
   }
@@ -99,6 +146,22 @@ body {
     .feed-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.5rem;
+    }
+  }
+
+  .feed-sparse {
+    min-height: min(52vh, 28rem);
+  }
+  @media (min-width: 768px) {
+    .feed-sparse {
+      align-content: start;
+    }
+    .feed-sparse .card-soft.anim-enter,
+    .feed-sparse .empty-state-wide {
+      grid-column: 1 / -1;
+      max-width: 36rem;
+      justify-self: center;
+      width: 100%;
     }
   }
 
@@ -489,6 +552,8 @@ body {
   transition: transform 240ms var(--spring), opacity 200ms ease;
   transform: translateY(100%);
   opacity: 0.96;
+  /* Clear home indicator; sheet covers BottomNav (higher z-index on wrapper) */
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 .app-menu-panel-open {
   transform: translateY(0);

@@ -31,7 +31,7 @@ export default function NearbyPage() {
     onlineOnly,
     setOnlineOnly,
     currentUserId,
-    cloudReady,
+    storeReady,
     isLoggedIn,
   } = useStore();
   const [tab, setTab] = useState<Tab>("all");
@@ -123,10 +123,10 @@ export default function NearbyPage() {
           ))}
         </div>
 
-        {!cloudReady ? (
+        {!storeReady ? (
           <FeedSkeleton cards={4} />
         ) : (
-          <div className="feed-grid">
+          <div className={emptyHelpers || emptySeekers || emptyAll ? "feed-grid feed-sparse" : "feed-grid"}>
             {(tab === "all" || tab === "helpers") &&
               peopleForTab.map((u) => <UserCard key={u.id} user={u} />)}
 

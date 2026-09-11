@@ -24,7 +24,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "card-soft anim-enter p-8 text-center md:col-span-2 xl:col-span-3",
+        "empty-state-wide card-soft anim-enter p-8 sm:p-10 text-center md:col-span-2 xl:col-span-3",
         className
       )}
     >

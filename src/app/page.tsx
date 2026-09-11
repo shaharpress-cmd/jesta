@@ -22,6 +22,7 @@ export default function HomePage() {
     getUser,
     radius,
     setRadius,
+    storeReady,
     cloudReady,
     isLoggedIn,
   } = useStore();
@@ -89,14 +90,14 @@ export default function HomePage() {
             לידך עכשיו
           </h2>
           <span className="inline-flex items-center rounded-full bg-coral-soft px-3 py-1.5 text-[13px] font-bold text-coral tabular-nums">
-            {cloudReady ? `${list.length} ג׳סטות` : "…"}
+            {storeReady ? `${list.length} ג׳סטות` : "…"}
           </span>
         </div>
 
-        {!cloudReady ? (
+        {!storeReady ? (
           <FeedSkeleton cards={4} />
         ) : (
-          <div className="feed-grid">
+          <div className={list.length === 0 ? "feed-grid feed-sparse" : "feed-grid"}>
             {list.length === 0 ? (
               <EmptyState
                 emoji="🤝"

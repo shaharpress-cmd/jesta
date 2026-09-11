@@ -67,7 +67,7 @@ export default function RootLayout({
       <body className="font-heebo bg-cream-deep text-charcoal antialiased text-[15px] sm:text-base">
         <StoreProvider>
           <div className="app-shell relative mx-auto min-h-dvh w-full bg-cream sm:shadow-card">
-            <main className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-32">{children}</main>
+            <main className="pb-[calc(7.25rem+env(safe-area-inset-bottom))] lg:pb-36">{children}</main>
             <BottomNav />
           </div>
           <ServiceWorkerRegister />
