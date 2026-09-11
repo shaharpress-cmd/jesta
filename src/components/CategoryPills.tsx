@@ -46,10 +46,8 @@ export function CategoryPills({
           type="button"
           onClick={() => onSelect("all")}
           className={cn(
-            "shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-all",
-            selected === "all"
-              ? "bg-coral text-white shadow-soft"
-              : "bg-white text-charcoal border border-charcoal/10"
+            "shrink-0 px-4 py-2 text-sm transition-all",
+            selected === "all" ? "pill-active" : "pill-inactive"
           )}
         >
           הכל
@@ -64,10 +62,8 @@ export function CategoryPills({
             type="button"
             onClick={() => onSelect(c.id)}
             className={cn(
-              "shrink-0 rounded-full px-3.5 py-2 text-sm font-medium transition-all flex items-center gap-1.5",
-              active
-                ? "bg-coral text-white shadow-soft"
-                : "bg-white text-charcoal border border-charcoal/10"
+              "shrink-0 px-3.5 py-2 text-sm transition-all flex items-center gap-1.5",
+              active ? "pill-active" : "pill-inactive"
             )}
           >
             <Icon

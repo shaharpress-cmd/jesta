@@ -73,7 +73,7 @@ export default function ChatPage() {
   return (
     <div className="fixed inset-0 z-[60] mx-auto flex max-w-md flex-col bg-cream">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-charcoal/5 bg-white/90 px-3 py-3 backdrop-blur">
+      <div className="flex items-center gap-3 border-b border-charcoal/[0.05] bg-white/95 px-3 py-3 backdrop-blur">
         <Link
           href="/messages"
           className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-cream"
@@ -120,7 +120,7 @@ export default function ChatPage() {
         {jesta && (
           <Link
             href={`/jesta/${jesta.id}`}
-            className="mt-2 block rounded-xl bg-white px-3 py-2 text-xs text-charcoal-muted shadow-card truncate"
+            className="mt-2 block rounded-2xl bg-white px-3 py-2.5 text-xs text-charcoal-muted border border-charcoal/[0.06] truncate"
           >
             בנוגע ל: <span className="text-charcoal font-medium">{jesta.title}</span>
           </Link>
@@ -144,10 +144,10 @@ export default function ChatPage() {
               )}
               <div
                 className={cn(
-                  "max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm",
+                  "max-w-[75%] rounded-3xl px-3.5 py-2.5 text-sm leading-relaxed",
                   mine
-                    ? "bg-coral text-white rounded-bl-md"
-                    : "bg-white text-charcoal border border-charcoal/5 rounded-br-md"
+                    ? "bg-coral text-white rounded-bl-lg shadow-soft"
+                    : "bg-white text-charcoal border border-charcoal/[0.06] rounded-br-lg"
                 )}
               >
                 {!mine && (
@@ -179,7 +179,7 @@ export default function ChatPage() {
           onClick={() =>
             sendMessage(thread.id, "📍 שיתפתי מיקום כללי באזור שלי")
           }
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-charcoal/10 bg-white py-2.5 text-xs font-medium text-charcoal"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-full pill-inactive py-2.5 text-xs"
         >
           <MapPin className="h-3.5 w-3.5 text-red-500" />
           שתף מיקום כללי
@@ -189,7 +189,7 @@ export default function ChatPage() {
           onClick={() =>
             sendMessage(thread.id, "✅ סיימנו את הג׳סטה — תודה!")
           }
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-coral/30 bg-coral-soft py-2.5 text-xs font-medium text-coral"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-coral/25 bg-coral-soft py-2.5 text-xs font-medium text-coral"
         >
           <CheckCircle2 className="h-3.5 w-3.5" />
           סיימנו את הג׳סטה
@@ -210,13 +210,13 @@ export default function ChatPage() {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSend()}
             placeholder="כתוב הודעה..."
-            className="flex-1 rounded-xl border border-charcoal/10 bg-cream px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-coral/30"
+            className="flex-1 rounded-2xl border border-charcoal/[0.07] bg-cream px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-coral/25"
           />
           <button
             type="button"
             onClick={onSend}
             disabled={!text.trim()}
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-coral text-white disabled:opacity-40"
+            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-coral text-white shadow-soft disabled:opacity-40"
             aria-label="שלח"
           >
             <Send className="h-5 w-5 -scale-x-100" />

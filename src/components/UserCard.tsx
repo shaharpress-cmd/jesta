@@ -10,7 +10,7 @@ export function UserCard({ user }: { user: User }) {
   return (
     <Link
       href={`/profile?u=${user.id}`}
-      className="flex items-center gap-3.5 rounded-2xl bg-white p-4 shadow-card transition hover:shadow-soft"
+      className="flex items-center gap-3.5 card-soft p-4 transition hover:border-coral/15"
     >
       <Avatar
         src={user.avatar}
@@ -22,15 +22,13 @@ export function UserCard({ user }: { user: User }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-bold text-charcoal truncate">{user.name}</h3>
-          <div className="flex items-center gap-2 shrink-0 text-xs">
-            <span className="flex items-center gap-0.5 text-charcoal">
-              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              {user.rating.toFixed(1)}
-            </span>
-          </div>
+          <span className="flex items-center gap-0.5 text-xs font-medium text-charcoal shrink-0">
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            {user.rating.toFixed(1)}
+          </span>
         </div>
         <p className="mt-0.5 flex items-center gap-1 text-xs text-charcoal-muted">
-          <MapPin className="h-3 w-3 text-coral" />
+          <MapPin className="h-3 w-3 text-coral/80" />
           {formatDistance(user.distanceM ?? 0)} ממך
         </p>
         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -40,7 +38,7 @@ export function UserCard({ user }: { user: User }) {
           {user.tags.slice(0, 2).map((t) => (
             <span
               key={t}
-              className="rounded-full bg-cream px-2 py-0.5 text-[10px] text-charcoal-muted border border-charcoal/5"
+              className="rounded-full bg-cream px-2 py-0.5 text-[10px] text-charcoal-muted border border-charcoal/[0.05]"
             >
               {t}
             </span>

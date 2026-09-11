@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Menu, ArrowRight, MapPin } from "lucide-react";
+import { Bell, Menu, ArrowRight, Search } from "lucide-react";
 
 export function Header({
   title,
@@ -11,6 +11,8 @@ export function Header({
   location,
   showMenu = false,
   showBell = true,
+  variant = "default",
+  onSearchClick,
 }: {
   title?: string;
   subtitle?: string;
@@ -19,7 +21,58 @@ export function Header({
   location?: string;
   showMenu?: boolean;
   showBell?: boolean;
+  /** Home: centered coral logo, search + light menu — calmer chrome */
+  variant?: "default" | "home";
+  onSearchClick?: () => void;
 }) {
+  if (variant === "home") {
+    return (
+      <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md px-4 pt-3.5 pb-2.5">
+        <div className="relative flex items-center justify-between min-h-10">
+          <button
+            type="button"
+            onClick={onSearchClick}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted hover:bg-white/70 transition"
+            aria-label="חיפוש"
+          >
+            <Search className="h-5 w-5" strokeWidth={2} />
+          </button>
+
+          <Link
+            href="/"
+            className="absolute inset-x-14 flex flex-col items-center pointer-events-auto"
+          >
+            <span className="relative text-[1.7rem] font-black tracking-tight text-coral leading-none">
+              ג׳סטה
+              <span
+                aria-hidden
+                className="absolute -top-0.5 end-[0.12em] h-1.5 w-1.5 rounded-full bg-coral/70"
+              />
+            </span>
+            {location && (
+              <span className="mt-0.5 text-[11px] font-medium text-charcoal-muted truncate max-w-full">
+                {location}
+              </span>
+            )}
+            {subtitle && !location && (
+              <span className="mt-0.5 text-[11px] font-medium text-charcoal-muted">
+                {subtitle}
+              </span>
+            )}
+          </Link>
+
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal-muted/80 hover:bg-white/70 transition"
+            aria-label="תפריט"
+          >
+            <Menu className="h-5 w-5" strokeWidth={2} />
+          </button>
+        </div>
+      </header>
+    );
+  }
+
   // Titled pages: centered title with back/actions in side slots
   if (title) {
     return (
@@ -29,7 +82,7 @@ export function Header({
             {showBack ? (
               <Link
                 href={backHref}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-white/80"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-white/70"
                 aria-label="חזרה"
               >
                 <ArrowRight className="h-5 w-5 text-charcoal" />
@@ -47,17 +100,17 @@ export function Header({
             {showBell && (
               <button
                 type="button"
-                className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/80"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/70"
                 aria-label="התראות"
               >
-                <Bell className="h-5 w-5 text-charcoal" />
+                <Bell className="h-5 w-5 text-charcoal-muted" />
                 <span className="absolute top-1.5 start-1.5 h-2 w-2 rounded-full bg-coral ring-2 ring-cream" />
               </button>
             )}
             {showMenu && (
               <button
                 type="button"
-                className="flex h-8 w-8 items-center justify-center rounded-full text-charcoal-muted/70 hover:bg-white/80"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-charcoal-muted/70 hover:bg-white/70"
                 aria-label="תפריט"
               >
                 <Menu className="h-[18px] w-[18px]" />
@@ -77,7 +130,7 @@ export function Header({
           {showBack && (
             <Link
               href={backHref}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-white/80"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-white/70"
               aria-label="חזרה"
             >
               <ArrowRight className="h-5 w-5 text-charcoal" />
@@ -89,7 +142,7 @@ export function Header({
               ג׳סטה
               <span
                 aria-hidden
-                className="absolute -top-0.5 end-[0.15em] h-1.5 w-1.5 rounded-full bg-coral/80"
+                className="absolute -top-0.5 end-[0.15em] h-1.5 w-1.5 rounded-full bg-coral/70"
               />
             </span>
             {subtitle && (
@@ -100,8 +153,7 @@ export function Header({
           </Link>
 
           {location && (
-            <span className="ms-1 inline-flex items-center gap-1 rounded-full bg-white/90 border border-charcoal/8 px-2.5 py-1 text-[11px] font-medium text-charcoal shadow-sm shrink-0">
-              <MapPin className="h-3 w-3 text-coral shrink-0" />
+            <span className="ms-1 inline-flex items-center gap-1 rounded-full bg-white/90 border border-charcoal/[0.06] px-2.5 py-1 text-[11px] font-medium text-charcoal-muted shrink-0">
               {location}
             </span>
           )}
@@ -111,17 +163,17 @@ export function Header({
           {showBell && (
             <button
               type="button"
-              className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/80"
+              className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/70"
               aria-label="התראות"
             >
-              <Bell className="h-5 w-5 text-charcoal" />
+              <Bell className="h-5 w-5 text-charcoal-muted" />
               <span className="absolute top-1.5 start-1.5 h-2 w-2 rounded-full bg-coral ring-2 ring-cream" />
             </button>
           )}
           {showMenu && (
             <button
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-charcoal-muted/70 hover:bg-white/80 hover:text-charcoal"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-charcoal-muted/70 hover:bg-white/70 hover:text-charcoal"
               aria-label="תפריט"
             >
               <Menu className="h-[18px] w-[18px]" />

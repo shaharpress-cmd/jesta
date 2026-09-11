@@ -51,16 +51,16 @@ export default function NearbyPage() {
 
         <div className="relative">
           <MapPlaceholder className="h-48 w-full" pins={5} />
-          <label className="absolute top-3 right-3 flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium shadow-card cursor-pointer">
+          <label className="absolute top-3 right-3 flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium border border-charcoal/[0.06] cursor-pointer">
             <span
               className={cn(
                 "relative h-5 w-9 rounded-full transition-colors",
-                onlineOnly ? "bg-sage" : "bg-charcoal/20"
+                onlineOnly ? "bg-sage" : "bg-charcoal/15"
               )}
             >
               <span
                 className={cn(
-                  "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all",
+                  "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all",
                   onlineOnly ? "right-0.5" : "right-[18px]"
                 )}
               />
@@ -71,7 +71,7 @@ export default function NearbyPage() {
               checked={onlineOnly}
               onChange={(e) => setOnlineOnly(e.target.checked)}
             />
-            רק מי שאונליין
+            הצג אותי במפה
           </label>
         </div>
 
@@ -82,10 +82,8 @@ export default function NearbyPage() {
               type="button"
               onClick={() => setTab(id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 rounded-full py-2.5 text-xs font-medium transition-all",
-                tab === id
-                  ? "bg-coral text-white shadow-soft"
-                  : "bg-white border border-charcoal/10 text-charcoal"
+                "flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs transition-all",
+                tab === id ? "pill-active" : "pill-inactive"
               )}
             >
               <Icon className="h-3.5 w-3.5" />
@@ -94,7 +92,7 @@ export default function NearbyPage() {
           ))}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {(tab === "all" || tab === "helpers") &&
             nearbyUsers.map((u) => <UserCard key={u.id} user={u} />)}
 
@@ -117,7 +115,7 @@ export default function NearbyPage() {
 
 function Empty() {
   return (
-    <div className="rounded-2xl bg-white p-8 text-center shadow-card">
+    <div className="card-soft p-8 text-center">
       <p className="text-3xl mb-2">📍</p>
       <p className="font-medium">אין תוצאות בטווח</p>
       <p className="text-sm text-charcoal-muted mt-1">נסו להרחיב את הרדיוס</p>

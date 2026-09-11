@@ -26,9 +26,9 @@ export default function MessagesPage() {
     <div>
       <Header title="הודעות" showBell={false} />
 
-      <div className="px-4 space-y-2">
+      <div className="px-4 space-y-2.5">
         {sorted.length === 0 ? (
-          <div className="rounded-2xl bg-white p-10 text-center shadow-card mt-4">
+          <div className="card-soft p-10 text-center mt-4">
             <p className="text-4xl mb-2">💬</p>
             <p className="font-medium">אין הודעות עדיין</p>
             <p className="text-sm text-charcoal-muted mt-1">
@@ -54,7 +54,7 @@ export default function MessagesPage() {
               <Link
                 key={t.id}
                 href={`/chat/${t.id}`}
-                className="flex items-center gap-3.5 rounded-2xl bg-white p-4 shadow-card transition hover:shadow-soft"
+                className="flex items-center gap-3.5 card-soft p-4 transition hover:border-coral/15"
               >
                 <Avatar
                   src={other.avatar}

@@ -22,11 +22,11 @@ import { CATEGORY_MAP, SAFETY } from "@/lib/categories";
 import type { CategoryId } from "@/lib/types";
 
 const TAG_STYLES = [
-  "bg-coral text-white",
-  "bg-orange-100 text-orange-800",
-  "bg-sky-100 text-sky-800",
-  "bg-purple-100 text-purple-800",
-  "bg-emerald-100 text-emerald-800",
+  "bg-coral-soft text-coral-dark border border-coral/20",
+  "bg-amberSoft text-amber-800/80 border border-amber-200/40",
+  "bg-sage-soft text-sage border border-sage/25",
+  "bg-cream text-charcoal-muted border border-charcoal/8",
+  "bg-white text-charcoal border border-charcoal/8",
 ];
 
 function ProfileInner() {
@@ -126,7 +126,7 @@ function ProfileInner() {
         </section>
 
         {/* Stats */}
-        <section className="rounded-2xl bg-white p-4 shadow-card">
+        <section className="card-soft p-4">
           <h2 className="mb-4 flex items-center gap-2 font-bold text-charcoal">
             <BarChart3 className="h-4 w-4 text-coral" />
             סטטיסטיקה
@@ -199,7 +199,7 @@ function ProfileInner() {
             {recent.map((r) => (
               <div
                 key={r.text}
-                className="flex items-center gap-3 rounded-2xl bg-white p-3.5 shadow-card"
+                className="flex items-center gap-3 card-soft p-3.5"
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-charcoal truncate">
@@ -217,7 +217,7 @@ function ProfileInner() {
         </section>
 
         {isMe && (
-          <section className="rounded-2xl bg-white p-4 shadow-card space-y-3">
+          <section className="card-soft p-4 space-y-3">
             <h2 className="flex items-center gap-2 font-bold text-charcoal">
               <LogIn className="h-4 w-4 text-coral" />
               החלף משתמש דמו

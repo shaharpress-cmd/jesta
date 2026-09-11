@@ -1,6 +1,5 @@
 "use client";
 
-import { MapPin } from "lucide-react";
 import { RADIUS_OPTIONS } from "@/lib/categories";
 import type { RadiusPreset } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -22,13 +21,10 @@ export function RadiusFilter({
             type="button"
             onClick={() => onChange(opt.id)}
             className={cn(
-              "shrink-0 rounded-full px-3.5 py-2 text-sm font-medium transition-all flex items-center gap-1.5",
-              active
-                ? "bg-coral text-white shadow-soft"
-                : "bg-white text-charcoal border border-charcoal/10"
+              "shrink-0 px-3.5 py-2 text-sm transition-all",
+              active ? "pill-active" : "pill-inactive"
             )}
           >
-            {active && <MapPin className="h-3.5 w-3.5" />}
             {opt.label}
           </button>
         );

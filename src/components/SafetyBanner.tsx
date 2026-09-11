@@ -17,7 +17,7 @@ export function SafetyBanner({
           className
         )}
       >
-        <Heart className="mt-0.5 h-3.5 w-3.5 shrink-0 text-coral/70" />
+        <Heart className="mt-0.5 h-3.5 w-3.5 shrink-0 text-coral/60" />
         <span>{SAFETY.intermediary}</span>
       </p>
     );
@@ -27,14 +27,14 @@ export function SafetyBanner({
     return (
       <div
         className={cn(
-          "flex items-start gap-2 rounded-xl safety-amber px-3 py-2.5 text-xs text-charcoal",
+          "flex items-start gap-2 rounded-2xl safety-amber px-3.5 py-2.5 text-xs text-charcoal/90",
           className
         )}
       >
-        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-700/80" />
+        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-700/70" />
         <p>
           אל תשתפו{" "}
-          <strong className="text-coral-dark">כתובת מדויקת</strong> עד שאתם
+          <strong className="text-coral-dark font-semibold">כתובת מדויקת</strong> עד שאתם
           מרגישים בנוח • דווח/חסום זמינים
         </p>
       </div>
@@ -44,11 +44,11 @@ export function SafetyBanner({
   return (
     <div
       className={cn(
-        "flex items-start gap-2 rounded-2xl safety-amber px-4 py-3 text-sm text-charcoal",
+        "flex items-start gap-2.5 rounded-3xl safety-amber px-4 py-3.5 text-sm text-charcoal/90",
         className
       )}
     >
-      <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-700/80" />
+      <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-700/70" />
       <p>{SAFETY.publicPlace}</p>
     </div>
   );

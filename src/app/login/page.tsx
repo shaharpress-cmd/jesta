@@ -31,7 +31,7 @@ export default function LoginPage() {
                 setCurrentUserId(u.id);
                 router.push("/");
               }}
-              className={`flex w-full items-center gap-3 rounded-2xl bg-white p-3.5 shadow-card text-right transition hover:shadow-soft ${
+              className={`flex w-full items-center gap-3 card-soft p-3.5 text-right transition hover:border-coral/20 ${
                 u.id === currentUserId ? "ring-2 ring-coral" : ""
               }`}
             >

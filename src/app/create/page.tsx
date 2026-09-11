@@ -59,10 +59,10 @@ export default function CreatePage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              placeholder="נגמר לי הדלק ליד..."
-              className="w-full rounded-2xl border border-charcoal/10 bg-white p-4 pe-4 ps-4 text-sm shadow-card placeholder:text-charcoal-light focus:outline-none focus:ring-2 focus:ring-coral/40 resize-none"
+              placeholder="ספרו לנו במה אפשר לעזור..."
+              className="input-soft w-full p-4 resize-none min-h-[7.5rem]"
             />
-            <Pencil className="absolute bottom-3 end-3 h-4 w-4 text-charcoal-light" />
+            <Pencil className="absolute bottom-3.5 end-3.5 h-4 w-4 text-charcoal-light" />
           </div>
         </div>
 
@@ -82,8 +82,8 @@ export default function CreatePage() {
           <label className="mb-2 block text-sm font-semibold text-charcoal">
             איפה:
           </label>
-          <div className="flex items-center gap-2 rounded-2xl border border-charcoal/10 bg-white px-4 py-3.5 shadow-card">
-            <MapPin className="h-5 w-5 text-charcoal shrink-0" />
+          <div className="flex items-center gap-2 input-soft px-4 py-3.5">
+            <MapPin className="h-5 w-5 text-coral/80 shrink-0" />
             <input
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -106,10 +106,8 @@ export default function CreatePage() {
                 type="button"
                 onClick={() => setUrgency(id)}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 rounded-2xl py-3 text-sm font-medium transition-all",
-                  urgency === id
-                    ? "bg-coral text-white shadow-soft"
-                    : "bg-white border border-charcoal/10 text-charcoal"
+                  "flex-1 flex items-center justify-center gap-1.5 py-3 text-sm transition-all",
+                  urgency === id ? "pill-active" : "pill-inactive"
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -125,13 +123,13 @@ export default function CreatePage() {
           type="button"
           disabled={!canSubmit || submitting}
           onClick={onSubmit}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-coral py-4 text-base font-bold text-white shadow-soft disabled:opacity-50"
+          className="cta-coral"
         >
           פרסם ג׳סטה
           <ArrowLeft className="h-5 w-5" />
         </button>
 
-        <p className="text-center text-xs text-charcoal-muted px-4">
+        <p className="text-center text-xs text-charcoal-muted px-4 leading-relaxed">
           בפרסום אתם מאשרים שזו עזרה לא-מקצועית ללא תשלום. ג׳סטה מתווכת בלבד.
         </p>
       </div>

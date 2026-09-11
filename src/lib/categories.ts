@@ -3,14 +3,14 @@ import type { Category, CategoryId, RadiusOption } from "./types";
 /** Order tuned so קניות / גינה appear early in home pills */
 export const CATEGORIES: Category[] = [
   { id: "fuel", label: "דלק/דרך", shortLabel: "דלק", emoji: "⛽", color: "#E07A5F" },
-  { id: "moving", label: "הובלה קלה", shortLabel: "הובלה", emoji: "📦", color: "#5B8DEF" },
+  { id: "moving", label: "הובלה קלה", shortLabel: "הובלה", emoji: "📦", color: "#6B8FCE" },
   { id: "errands", label: "קניות/סידורים", shortLabel: "קניות", emoji: "🛒", color: "#81B29A" },
-  { id: "home", label: "בית/מדף/הרמה", shortLabel: "בית", emoji: "🏠", color: "#9B59B6" },
-  { id: "garden", label: "גינה", shortLabel: "גינה", emoji: "🌿", color: "#6AB04C" },
-  { id: "pets", label: "חיות מחמד", shortLabel: "חיות", emoji: "🐕", color: "#F39C12" },
-  { id: "digital", label: "דיגיטלי", shortLabel: "דיגיטלי", emoji: "💻", color: "#3498DB" },
-  { id: "neighborhood", label: "שכונה", shortLabel: "שכונה", emoji: "🏘️", color: "#8E44AD" },
-  { id: "other", label: "אחר", shortLabel: "אחר", emoji: "✨", color: "#95A5A6" },
+  { id: "home", label: "בית/מדף/הרמה", shortLabel: "בית", emoji: "🏠", color: "#A078B0" },
+  { id: "garden", label: "גינה", shortLabel: "גינה", emoji: "🌿", color: "#7AA86A" },
+  { id: "pets", label: "חיות מחמד", shortLabel: "חיות", emoji: "🐕", color: "#E0A04A" },
+  { id: "digital", label: "דיגיטלי", shortLabel: "דיגיטלי", emoji: "💻", color: "#5B9EBF" },
+  { id: "neighborhood", label: "שכונה", shortLabel: "שכונה", emoji: "🏘️", color: "#8E6BA8" },
+  { id: "other", label: "אחר", shortLabel: "אחר", emoji: "✨", color: "#9AA0A6" },
 ];
 
 export const CATEGORY_MAP: Record<CategoryId, Category> = Object.fromEntries(

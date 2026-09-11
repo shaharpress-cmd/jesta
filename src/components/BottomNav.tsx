@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, MapPinned, Plus, MessageCircle, User } from "lucide-react";
+import { Home, Heart, Plus, MessageCircle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 
 const tabs = [
   { href: "/", label: "בית", icon: Home },
-  { href: "/nearby", label: "לידך", icon: MapPinned },
+  { href: "/nearby", label: "לידך", icon: Heart },
   { href: "/create", label: "פרסם", icon: Plus, special: true },
   { href: "/messages", label: "הודעות", icon: MessageCircle },
   { href: "/profile", label: "פרופיל", icon: User },
@@ -28,7 +28,7 @@ export function BottomNav() {
   if (hide) return null;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 mx-auto max-w-md border-t border-charcoal/5 bg-white/95 backdrop-blur-md shadow-nav pb-safe">
+    <nav className="fixed bottom-0 inset-x-0 z-50 mx-auto max-w-md border-t border-charcoal/[0.05] bg-white/95 backdrop-blur-md shadow-nav pb-safe">
       <div className="flex items-end justify-around px-1 pt-1.5 pb-2.5">
         {tabs.map((tab) => {
           const active =
@@ -42,12 +42,12 @@ export function BottomNav() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="relative -mt-7 flex flex-col items-center px-1"
+                className="relative -mt-6 flex flex-col items-center px-1"
               >
-                <span className="flex h-[3.6rem] w-[3.6rem] items-center justify-center rounded-full bg-coral shadow-soft text-white ring-4 ring-cream">
-                  <Icon className="h-7 w-7" strokeWidth={2.75} />
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-coral shadow-fab text-white ring-[5px] ring-cream">
+                  <Icon className="h-7 w-7" strokeWidth={2.5} />
                 </span>
-                <span className="mt-1 text-[10px] font-bold text-coral">
+                <span className="mt-1 text-[10px] font-semibold text-coral">
                   {tab.label}
                 </span>
               </Link>
@@ -67,18 +67,16 @@ export function BottomNav() {
             >
               <span className="relative">
                 <Icon
-                  className={cn("h-6 w-6", active && "stroke-[2.5]")}
+                  className={cn("h-6 w-6", active && "stroke-[2.4]")}
+                  fill={active && tab.href === "/nearby" ? "currentColor" : "none"}
                 />
                 {tab.href === "/messages" && unread > 0 && (
-                  <span className="absolute -top-1 -start-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+                  <span className="absolute -top-1 -start-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[9px] font-bold text-white">
                     {unread}
                   </span>
                 )}
               </span>
               {tab.label}
-              {active && (
-                <span className="absolute -bottom-0.5 h-0.5 w-5 rounded-full bg-coral" />
-              )}
             </Link>
           );
         })}

@@ -6,10 +6,9 @@ import Link from "next/link";
 import {
   Star,
   MapPin,
-  Handshake,
+  Heart,
   Flag,
   Users,
-  Check,
   MessageCircle,
   ShieldCheck,
 } from "lucide-react";
@@ -82,8 +81,8 @@ export default function JestaDetailPage() {
       <div className="px-4 space-y-5 pb-10">
         <div className="flex justify-center">
           <span
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold text-white"
-            style={{ backgroundColor: cat.color }}
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold"
+            style={{ backgroundColor: `${cat.color}1F`, color: cat.color }}
           >
             <span>{cat.emoji}</span>
             {cat.shortLabel}
@@ -109,7 +108,7 @@ export default function JestaDetailPage() {
               <p className="font-bold text-charcoal flex items-center gap-1">
                 {author.name}
                 {author.verified && (
-                  <ShieldCheck className="h-4 w-4 text-sky-500" />
+                  <ShieldCheck className="h-4 w-4 text-sage" />
                 )}
               </p>
               <p className="text-xs text-charcoal-muted">{SAFETY.verifiedLabel}</p>
@@ -117,17 +116,17 @@ export default function JestaDetailPage() {
           </Link>
           <div className="flex items-center gap-3 text-sm">
             <span className="flex items-center gap-1 font-medium">
-              <Star className="h-4 w-4 fill-coral text-coral" />
+              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
               {author.rating.toFixed(1)}
             </span>
             <span className="flex items-center gap-1 text-charcoal-muted">
-              <MapPin className="h-4 w-4 text-coral" />
+              <MapPin className="h-4 w-4 text-coral/80" />
               {formatDistance(jesta.distanceM)}
             </span>
           </div>
         </div>
 
-        <p className="text-charcoal leading-relaxed text-[15px]">
+        <p className="text-charcoal/90 leading-relaxed text-[15px]">
           {jesta.description}
         </p>
 
@@ -148,7 +147,7 @@ export default function JestaDetailPage() {
                 user ? (
                   <div
                     key={user.id}
-                    className="shrink-0 w-40 rounded-2xl bg-white p-3.5 shadow-card"
+                    className="shrink-0 w-40 card-soft p-3.5"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Avatar src={user.avatar} name={user.name} size="sm" />
@@ -166,7 +165,7 @@ export default function JestaDetailPage() {
                     <button
                       type="button"
                       onClick={() => openChatWithHelper(user.id)}
-                      className="flex w-full items-center justify-center gap-1 rounded-full bg-coral-soft py-2 text-xs font-semibold text-coral"
+                      className="flex w-full items-center justify-center gap-1 rounded-full border border-coral/35 bg-coral-soft/60 py-2 text-xs font-semibold text-coral"
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
                       צ׳אט
@@ -190,19 +189,19 @@ export default function JestaDetailPage() {
                   onOffer();
                 }
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-coral py-4 text-base font-bold text-white shadow-soft"
+              className="cta-coral"
             >
               {alreadyOffered ? (
                 <MessageCircle className="h-5 w-5" />
               ) : (
-                <Handshake className="h-5 w-5" />
+                <Heart className="h-5 w-5" fill="currentColor" />
               )}
               {alreadyOffered ? "צ׳אט" : "אני יכול לעזור"}
             </button>
             <button
               type="button"
               onClick={() => setReportOpen(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-coral bg-white py-3.5 text-base font-bold text-coral"
+              className="btn-outline-coral"
             >
               <Flag className="h-5 w-5" />
               דווח
