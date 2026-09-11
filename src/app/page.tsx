@@ -8,7 +8,7 @@ import { CategoryPills } from "@/components/CategoryPills";
 import { JestaCard } from "@/components/JestaCard";
 import { RadiusFilter } from "@/components/RadiusFilter";
 import { SafetyBanner } from "@/components/SafetyBanner";
-import { GuestIntroCard } from "@/components/GuestIntroCard";
+import { HomeHero } from "@/components/HomeHero";
 import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import type { CategoryId } from "@/lib/types";
@@ -44,11 +44,11 @@ export default function HomePage() {
         }}
       />
 
-      <div className="page-pad flex flex-col gap-4">
-        <GuestIntroCard />
+      <HomeHero />
 
+      <div className="filter-frost page-pad">
         {(searchOpen || query) && (
-          <div className="relative max-w-xl anim-enter">
+          <div className="relative max-w-xl mb-2.5 anim-enter">
             <Search className="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal-light" />
             <input
               ref={searchRef}
@@ -62,12 +62,23 @@ export default function HomePage() {
             />
           </div>
         )}
-
         <RadiusFilter value={radius} onChange={setRadius} />
+        <div className="mt-2">
+          <CategoryPills selected={category} onSelect={setCategory} compact />
+        </div>
+      </div>
 
-        <CategoryPills selected={category} onSelect={setCategory} compact />
+      <div className="page-pad flex flex-col gap-6 pt-6 pb-2">
+        <div className="flex items-end justify-between gap-3">
+          <h2 className="text-[1.4rem] sm:text-[1.65rem] font-black text-charcoal leading-none tracking-tight">
+            לידך עכשיו
+          </h2>
+          <span className="inline-flex items-center rounded-full bg-coral-soft px-3 py-1.5 text-[13px] font-bold text-coral tabular-nums">
+            {list.length} ג׳סטות
+          </span>
+        </div>
 
-        <div className="feed-grid pt-1">
+        <div className="feed-grid">
           {list.length === 0 ? (
             <EmptyState
               emoji="🤝"
@@ -85,7 +96,7 @@ export default function HomePage() {
           )}
         </div>
 
-        <div className="flex justify-center pt-2">
+        <div className="flex justify-center pt-1">
           <Link
             href="/טיפים"
             className="btn-pressable inline-flex min-h-11 items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm"

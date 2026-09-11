@@ -1,4 +1,4 @@
-import type { Category, CategoryId, RadiusOption } from "./types";
+import type { Category, CategoryId, RadiusOption, Urgency } from "./types";
 
 /** Order tuned so קניות / גינה appear early in home pills */
 export const CATEGORIES: Category[] = [
@@ -33,6 +33,12 @@ export function formatDistance(meters: number): string {
   const km = meters / 1000;
   if (km < 10) return `${km.toFixed(1)} ק״מ`;
   return `${Math.round(km)} ק״מ`;
+}
+
+export function urgencyLabel(urgency: Urgency): string | null {
+  if (urgency === "now") return "עכשיו";
+  if (urgency === "today") return "היום";
+  return null;
 }
 
 export function formatRelativeTime(iso: string): string {
