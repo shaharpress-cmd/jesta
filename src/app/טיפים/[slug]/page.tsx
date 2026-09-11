@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/Header";
 import { TipsDisclaimer } from "@/components/TipsDisclaimer";
+import { JestiBuddy } from "@/components/JestiBuddy";
 import { CATEGORY_MAP } from "@/lib/categories";
 import {
   TIP_BY_SLUG,
@@ -78,18 +79,29 @@ export default function TipPage({ params }: Props) {
 
       <article className="page-pad space-y-6 pb-10 max-w-3xl mx-auto">
         <header className="space-y-3">
-          <div className="flex items-center gap-2 text-sm text-charcoal-muted">
-            <span aria-hidden className="text-lg">
-              {cat.emoji}
-            </span>
-            <span>{cat.label}</span>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 space-y-3">
+              <div className="flex items-center gap-2 text-sm text-charcoal-muted">
+                <span aria-hidden className="text-lg">
+                  {cat.emoji}
+                </span>
+                <span>{cat.label}</span>
+              </div>
+              <h1 className="text-2xl font-black text-charcoal leading-snug">
+                {page.h1}
+              </h1>
+              <p className="text-sm text-charcoal-muted leading-relaxed">
+                {page.intro}
+              </p>
+            </div>
+            <JestiBuddy
+              role="category"
+              category={page.id}
+              variant="help"
+              size="md"
+              hold
+            />
           </div>
-          <h1 className="text-2xl font-black text-charcoal leading-snug">
-            {page.h1}
-          </h1>
-          <p className="text-sm text-charcoal-muted leading-relaxed">
-            {page.intro}
-          </p>
         </header>
 
         <TipsDisclaimer />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Bell, Menu, ArrowRight, Search } from "lucide-react";
 import { AppMenu } from "@/components/AppMenu";
 import { Wordmark } from "@/components/Wordmark";
+import { JestiBuddy } from "@/components/JestiBuddy";
 
 export function Header({
   title,
@@ -65,13 +66,12 @@ export function Header({
             className="absolute inset-x-14 flex flex-col items-center justify-center pointer-events-auto rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/30"
           >
             <span className="inline-flex items-center gap-1.5">
-              <img
-                src="/jesti/hand-accent.png"
-                alt=""
-                width={22}
-                height={22}
-                className="pointer-events-none select-none h-[22px] w-[22px] object-contain opacity-90"
-                aria-hidden
+              <JestiBuddy
+                role="brand"
+                variant="idle"
+                size="sm"
+                label=""
+                className="!gap-0 scale-[0.55] origin-center -my-3"
               />
               <Wordmark size="md" bilingual bilingualPlacement="beside" />
             </span>

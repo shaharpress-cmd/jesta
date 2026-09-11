@@ -65,6 +65,7 @@ export function HomeHero() {
                 לידך
               </Link>
               <JestiBuddy
+                role="brand"
                 variant="cheer"
                 size="md"
                 className="ms-1 mb-0.5 opacity-95"
@@ -91,6 +92,7 @@ export function HomeHero() {
                 התחברות
               </Link>
               <JestiBuddy
+                role="brand"
                 variant="wave"
                 size="md"
                 className="ms-1 mb-0.5 opacity-95"

@@ -113,7 +113,7 @@ export default function HomePage() {
                 secondaryHref="/nearby"
                 secondaryLabel="לידך"
                 buddyVariant="cheer"
-                buddyLabel="יפה!"
+                buddyCategory={category === "all" ? "brand" : category}
               />
             ) : (
               list.map((j) => (

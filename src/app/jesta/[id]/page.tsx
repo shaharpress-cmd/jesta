@@ -373,24 +373,27 @@ export default function JestaDetailPage() {
             <div className="jesti-float-sticky pointer-events-none">
               {isOwn ? (
                 <JestiBuddy
+                  role="category"
+                  category={jesta.category}
                   variant="wait"
                   size="sm"
                   hold
-                  label="עוד רגע"
                 />
               ) : alreadyOffered ? (
                 <JestiBuddy
+                  role="category"
+                  category={jesta.category}
                   variant="cheer"
                   size="sm"
                   hold
-                  label="יפה!"
                 />
               ) : (
                 <JestiBuddy
+                  role="category"
+                  category={jesta.category}
                   variant="help"
                   size="sm"
                   hold
-                  label="אפשר לעזור"
                 />
               )}
             </div>

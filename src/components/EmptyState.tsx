@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { JestiBuddy, type JestiVariant } from "@/components/JestiBuddy";
+import { JestiBuddy, type JestiVariant, type JestiCostume } from "@/components/JestiBuddy";
 
 export function EmptyState({
   emoji,
@@ -14,6 +14,7 @@ export function EmptyState({
   className,
   buddyVariant = "cheer",
   buddyLabel,
+  buddyCategory,
 }: {
   emoji: string;
   title: string;
@@ -25,7 +26,9 @@ export function EmptyState({
   className?: string;
   buddyVariant?: JestiVariant;
   buddyLabel?: string;
+  buddyCategory?: JestiCostume;
 }) {
+  const isCategory = buddyCategory && buddyCategory !== "brand";
   return (
     <div
       className={cn(
@@ -35,6 +38,8 @@ export function EmptyState({
     >
       <div className="mb-3 flex flex-col items-center gap-1">
         <JestiBuddy
+          role={isCategory ? "category" : "brand"}
+          category={buddyCategory}
           variant={buddyVariant}
           size="lg"
           hold

@@ -435,7 +435,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   // Subscribe to Supabase auth
   useEffect(() => {
-    if (!isSupabaseConfigured() || !hydrated) {
+    if (!hydrated) return;
+    // Local/demo mode (or no Supabase) — never block the shell on cloud auth.
+    if (!isSupabaseConfigured() || forceLocal) {
       setCloudReady(true);
       return;
     }
@@ -443,15 +445,31 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const supabase = createClient();
     let cancelled = false;
 
-    supabase.auth.getSession().then(({ data }) => {
+    const settleGuest = () => {
       if (cancelled) return;
-      setSession(data.session);
-      if (data.session?.user && !forceLocal) {
-        void loadCloudData(data.session.user);
-      } else {
-        setCloudReady(true);
-      }
-    });
+      setCloudReady(true);
+    };
+    // Fail-open: never leave the shell stuck on hero skeleton if auth/cloud is slow.
+    const authTimeout = window.setTimeout(settleGuest, 2500);
+
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (cancelled) return;
+        setSession(data.session);
+        if (data.session?.user) {
+          void loadCloudData(data.session.user).finally(() => {
+            window.clearTimeout(authTimeout);
+          });
+        } else {
+          window.clearTimeout(authTimeout);
+          setCloudReady(true);
+        }
+      })
+      .catch(() => {
+        window.clearTimeout(authTimeout);
+        settleGuest();
+      });
 
     const {
       data: { subscription },
@@ -468,12 +486,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       cancelled = true;
+      window.clearTimeout(authTimeout);
       subscription.unsubscribe();
     };
-    // forceLocal intentionally omitted: initial session check reads current value;
-    // demo sign-in sets forceLocal and skips cloud overwrite.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, loadCloudData]);
+  }, [hydrated, forceLocal, loadCloudData]);
 
   const getUser = useCallback(
     (id: string) => users.find((u) => u.id === id),

@@ -152,14 +152,14 @@ function CreateForm() {
               <p className="font-bold text-charcoal">פורסם!</p>
               <p className="text-xs text-charcoal-muted">מעבירים לכרטיס הג׳סטה…</p>
             </div>
-            <JestiBuddy variant="cheer" size="sm" label="כל הכבוד" hold />
+            <JestiBuddy role="category" category={category || "brand"} variant="cheer" size="sm" hold />
           </div>
         ) : (
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm text-charcoal-muted leading-relaxed">
               ספרו מה צריך — נחפש יחד מי יכול לעזור.
             </p>
-            <JestiBuddy variant="seek" size="sm" label="מחפשים יחד" hold />
+            <JestiBuddy role="category" category={category || "brand"} variant="seek" size="sm" hold />
           </div>
         )}
 
