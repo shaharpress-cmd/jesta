@@ -69,7 +69,7 @@ export function AppMenu({
     : isDemoSession
       ? {
           href: "/login",
-          label: "מצב דמו · התחברות עם Google",
+          label: "עברו לחשבון אמיתי",
           icon: LogIn,
         }
       : { href: "/profile", label: "פרופיל", icon: UserRound };
