@@ -112,6 +112,8 @@ export default function HomePage() {
                 primaryLabel="פרסמו ג׳סטה"
                 secondaryHref="/nearby"
                 secondaryLabel="לידך"
+                buddyVariant="cheer"
+                buddyLabel="יפה!"
               />
             ) : (
               list.map((j) => (

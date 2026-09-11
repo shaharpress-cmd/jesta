@@ -65,10 +65,10 @@ export function HomeHero() {
                 לידך
               </Link>
               <JestiBuddy
-                variant="wave"
+                variant="cheer"
                 size="md"
                 className="ms-1 mb-0.5 opacity-95"
-                label="ג׳סטי"
+                label="יפה!"
               />
             </div>
           </>
@@ -94,7 +94,7 @@ export function HomeHero() {
                 variant="wave"
                 size="md"
                 className="ms-1 mb-0.5 opacity-95"
-                label="ג׳סטי"
+                label="היי"
               />
             </div>
           </>

@@ -9,6 +9,7 @@ import { CategoryPills } from "@/components/CategoryPills";
 import { SafetyBanner } from "@/components/SafetyBanner";
 import { CreateCategoryTips } from "@/components/CreateCategoryTips";
 import { PageFrame } from "@/components/EmptyState";
+import { JestiBuddy } from "@/components/JestiBuddy";
 import { useStore } from "@/lib/store";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import type { CategoryId, Urgency } from "@/lib/types";
@@ -139,7 +140,7 @@ function CreateForm() {
       <Header title="בקשת ג׳סטה" showBack backHref="/" showBell={false} showMenu={false} />
 
       <div className="page-pad space-y-5 pb-4 max-w-xl mx-auto">
-        {published && (
+        {published ? (
           <div
             role="status"
             className="anim-success card-soft flex items-center gap-3 border-sage/30 bg-sage-soft/50 p-4"
@@ -147,10 +148,18 @@ function CreateForm() {
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-sage text-white shadow-sm">
               <Check className="h-5 w-5" strokeWidth={2.5} />
             </span>
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="font-bold text-charcoal">פורסם!</p>
               <p className="text-xs text-charcoal-muted">מעבירים לכרטיס הג׳סטה…</p>
             </div>
+            <JestiBuddy variant="cheer" size="sm" label="כל הכבוד" hold />
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-charcoal-muted leading-relaxed">
+              ספרו מה צריך — נחפש יחד מי יכול לעזור.
+            </p>
+            <JestiBuddy variant="seek" size="sm" label="מחפשים יחד" hold />
           </div>
         )}
 

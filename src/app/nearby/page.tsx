@@ -196,6 +196,8 @@ export default function NearbyPage() {
                 primaryLabel="פרסמו ג׳סטה"
                 secondaryHref="/"
                 secondaryLabel="לבית"
+                buddyVariant={emptyHelpers ? "seek" : "wait"}
+                buddyLabel={emptyHelpers ? "מחפשים יחד" : "עוד רגע"}
               />
             )}
           </div>

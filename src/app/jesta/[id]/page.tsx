@@ -370,8 +370,29 @@ export default function JestaDetailPage() {
       {showStickyBar && (
         <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[60]">
           <div className="pointer-events-auto relative mx-auto w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl border-t border-charcoal/[0.06] bg-cream/97 backdrop-blur-md shadow-nav px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-            <div className="jesti-float-sticky pointer-events-none" aria-hidden>
-              <JestiBuddy variant="idle" size="sm" />
+            <div className="jesti-float-sticky pointer-events-none">
+              {isOwn ? (
+                <JestiBuddy
+                  variant="wait"
+                  size="sm"
+                  hold
+                  label="עוד רגע"
+                />
+              ) : alreadyOffered ? (
+                <JestiBuddy
+                  variant="cheer"
+                  size="sm"
+                  hold
+                  label="יפה!"
+                />
+              ) : (
+                <JestiBuddy
+                  variant="help"
+                  size="sm"
+                  hold
+                  label="אפשר לעזור"
+                />
+              )}
             </div>
             {isOwn ? (
               <div className="flex flex-col gap-2">

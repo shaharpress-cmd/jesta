@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { JestiBuddy } from "@/components/JestiBuddy";
+import { JestiBuddy, type JestiVariant } from "@/components/JestiBuddy";
 
 export function EmptyState({
   emoji,
@@ -12,6 +12,8 @@ export function EmptyState({
   secondaryHref,
   secondaryLabel,
   className,
+  buddyVariant = "cheer",
+  buddyLabel,
 }: {
   emoji: string;
   title: string;
@@ -21,6 +23,8 @@ export function EmptyState({
   secondaryHref?: string;
   secondaryLabel?: string;
   className?: string;
+  buddyVariant?: JestiVariant;
+  buddyLabel?: string;
 }) {
   return (
     <div
@@ -30,7 +34,12 @@ export function EmptyState({
       )}
     >
       <div className="mb-3 flex flex-col items-center gap-1">
-        <JestiBuddy variant="cheer" size="lg" />
+        <JestiBuddy
+          variant={buddyVariant}
+          size="lg"
+          hold
+          label={buddyLabel}
+        />
         <p className="text-3xl leading-none" aria-hidden>
           {emoji}
         </p>

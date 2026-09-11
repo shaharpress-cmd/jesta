@@ -38,6 +38,8 @@ export default function MessagesPage() {
             secondaryHref="/nearby"
             secondaryLabel="לידך"
             className="mt-4"
+            buddyVariant="wait"
+            buddyLabel="עוד רגע"
           />
         ) : (
           sorted.map((t) => {
