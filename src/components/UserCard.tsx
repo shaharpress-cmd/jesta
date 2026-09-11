@@ -6,7 +6,16 @@ import { formatDistance } from "@/lib/categories";
 import type { User } from "@/lib/types";
 import { Avatar } from "./Avatar";
 
-export function UserCard({ user }: { user: User }) {
+export function UserCard({
+  user,
+  example,
+}: {
+  user: User;
+  /** Force example badge (e.g. helpers-tab seed fallback) */
+  example?: boolean;
+}) {
+  const showExample = example || user.isExample;
+
   return (
     <Link
       href={`/profile?u=${user.id}`}
@@ -21,7 +30,14 @@ export function UserCard({ user }: { user: User }) {
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-bold text-charcoal truncate">{user.name}</h3>
+          <h3 className="font-bold text-charcoal truncate flex items-center gap-1.5">
+            <span className="truncate">{user.name}</span>
+            {showExample && (
+              <span className="shrink-0 rounded-full border border-amber-700/20 bg-amberSoft/90 px-1.5 py-0.5 text-[10px] font-bold text-charcoal/75">
+                דוגמה
+              </span>
+            )}
+          </h3>
           <span className="flex items-center gap-0.5 text-xs font-medium text-charcoal shrink-0">
             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
             {user.rating.toFixed(1)}

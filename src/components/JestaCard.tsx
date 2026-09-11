@@ -38,11 +38,18 @@ export function JestaCard({
           <span className="text-[13px] leading-none">{cat.emoji}</span>
           {cat.shortLabel}
         </span>
-        {urgency && (
-          <span className="inline-flex items-center rounded-full bg-coral px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
-            {urgency}
-          </span>
-        )}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {jesta.isExample && (
+            <span className="inline-flex items-center rounded-full border border-amber-700/20 bg-amberSoft/90 px-2 py-0.5 text-[10px] font-bold text-charcoal/75">
+              דוגמה
+            </span>
+          )}
+          {urgency && (
+            <span className="inline-flex items-center rounded-full bg-coral px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+              {urgency}
+            </span>
+          )}
+        </div>
       </div>
 
       <h3 className="mt-3 text-[19px] sm:text-[20px] font-black text-charcoal leading-snug line-clamp-2 tracking-tight">

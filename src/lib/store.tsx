@@ -374,8 +374,27 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         (messagesRes.data as MessageRow[] | null) ?? []
       ).map(messageFromRow);
 
-      setUsers(mergedUsers);
-      setJestas(mappedJestas);
+      // Soft-merge seed users/jestas missing from cloud so demo links (e.g. /jesta/j1)
+      // and helpers tab keep working, clearly marked as examples.
+      const cloudUserIds = new Set(mergedUsers.map((u) => u.id));
+      const exampleUsers = SEED_USERS.filter((u) => !cloudUserIds.has(u.id)).map(
+        (u) => ({ ...u, isExample: true as const })
+      );
+      const usersWithExamples = [...mergedUsers, ...exampleUsers];
+
+      const cloudJestaIds = new Set(mappedJestas.map((j) => j.id));
+      const exampleJestas = SEED_JESTAS.filter(
+        (j) => !cloudJestaIds.has(j.id)
+      ).map((j) => ({ ...j, isExample: true as const }));
+      // Ensure authors of example jestas exist
+      const authorIds = new Set(usersWithExamples.map((u) => u.id));
+      const authorExtras = SEED_USERS.filter(
+        (u) =>
+          exampleJestas.some((j) => j.authorId === u.id) && !authorIds.has(u.id)
+      ).map((u) => ({ ...u, isExample: true as const }));
+
+      setUsers([...usersWithExamples, ...authorExtras]);
+      setJestas([...mappedJestas, ...exampleJestas]);
       setOffers(mappedOffers);
       setThreads(mappedThreads);
       setMessages(mappedMessages);

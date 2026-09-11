@@ -42,6 +42,8 @@ export interface User {
   authProvider?: AuthProvider;
   /** ISO timestamp when user accepted terms during onboarding */
   acceptedTermsAt?: string;
+  /** Seed/demo row soft-merged into cloud for examples */
+  isExample?: boolean;
 }
 
 export type Urgency = "now" | "today" | "flexible";
@@ -62,6 +64,8 @@ export interface Jesta {
   createdAt: string;
   offerIds: string[];
   respondersCount: number;
+  /** Seed/demo row soft-merged into cloud for examples */
+  isExample?: boolean;
 }
 
 export interface Offer {

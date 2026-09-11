@@ -54,7 +54,7 @@ export function SessionModeChip({
         role="status"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-amber-600/70" aria-hidden />
-        מצב הדגמה
+        מצב דמו
       </div>
     );
   }

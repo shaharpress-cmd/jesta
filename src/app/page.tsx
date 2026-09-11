@@ -13,6 +13,7 @@ import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { FeedSkeleton } from "@/components/FeedSkeleton";
 import { SessionModeChip } from "@/components/SessionModeChip";
 import { useStore } from "@/lib/store";
+import { RADIUS_OPTIONS } from "@/lib/categories";
 import { exampleLocationChip } from "@/lib/location";
 import type { CategoryId } from "@/lib/types";
 
@@ -44,7 +45,11 @@ export default function HomePage() {
     });
   }, [filteredJestas, category, query]);
 
-  const locationLabel = exampleLocationChip({ guest: !isLoggedIn });
+  const radiusLabel = RADIUS_OPTIONS.find((r) => r.id === radius)?.label;
+  const locationLabel = exampleLocationChip({
+    guest: !isLoggedIn,
+    radiusLabel,
+  });
 
   return (
     <PageFrame>

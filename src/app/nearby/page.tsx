@@ -11,6 +11,7 @@ import { EmptyState, PageFrame } from "@/components/EmptyState";
 import { FeedSkeleton } from "@/components/FeedSkeleton";
 import { SessionModeChip } from "@/components/SessionModeChip";
 import { useStore } from "@/lib/store";
+import { USERS as SEED_USERS } from "@/lib/data";
 import { RADIUS_OPTIONS } from "@/lib/categories";
 import { exampleLocationChip } from "@/lib/location";
 import { cn } from "@/lib/utils";
@@ -33,10 +34,12 @@ export default function NearbyPage() {
     currentUserId,
     storeReady,
     isLoggedIn,
+    isCloud,
   } = useStore();
   const [tab, setTab] = useState<Tab>("all");
 
-  const maxM = RADIUS_OPTIONS.find((r) => r.id === radius)?.meters ?? null;
+  const radiusOpt = RADIUS_OPTIONS.find((r) => r.id === radius);
+  const maxM = radiusOpt?.meters ?? null;
 
   const nearbyUsers = useMemo(() => {
     return users
@@ -51,19 +54,44 @@ export default function NearbyPage() {
     [nearbyUsers]
   );
 
+  // Cloud/demo often has only self → after exclude, helpers empty.
+  // Fall back to seed helpers labeled as examples.
+  const displayHelpers = useMemo(() => {
+    if (helperUsers.length > 0) {
+      return helperUsers.map((u) => ({ user: u, example: !!u.isExample }));
+    }
+    const seeds = SEED_USERS.filter(
+      (u) => u.id !== currentUserId && isHelperUser(u)
+    )
+      .filter((u) => (onlineOnly ? u.online : true))
+      .filter((u) => (maxM === null ? true : (u.distanceM ?? 0) <= maxM))
+      .sort((a, b) => (a.distanceM ?? 0) - (b.distanceM ?? 0));
+    return seeds.map((u) => ({ user: u, example: true }));
+  }, [helperUsers, currentUserId, onlineOnly, maxM]);
+
+  const usingExampleHelpers =
+    helperUsers.length === 0 && displayHelpers.length > 0;
+
   const tabs: { id: Tab; label: string; icon: typeof Users }[] = [
     { id: "all", label: "כולם", icon: Users },
     { id: "helpers", label: "מוכנים לעזור", icon: HandHelping },
     { id: "seekers", label: "מבקשים עזרה", icon: Heart },
   ];
 
-  const peopleForTab = tab === "helpers" ? helperUsers : nearbyUsers;
-  const emptyHelpers = tab === "helpers" && helperUsers.length === 0;
+  const peopleForTab =
+    tab === "helpers"
+      ? displayHelpers
+      : nearbyUsers.map((u) => ({ user: u, example: !!u.isExample }));
+
+  const emptyHelpers = tab === "helpers" && displayHelpers.length === 0;
   const emptySeekers = tab === "seekers" && filteredJestas.length === 0;
   const emptyAll =
     tab === "all" && nearbyUsers.length === 0 && filteredJestas.length === 0;
 
-  const locationLabel = exampleLocationChip({ guest: !isLoggedIn });
+  const locationLabel = exampleLocationChip({
+    guest: !isLoggedIn,
+    radiusLabel: radiusOpt?.label,
+  });
 
   return (
     <PageFrame>
@@ -123,12 +151,28 @@ export default function NearbyPage() {
           ))}
         </div>
 
+        {tab === "helpers" && usingExampleHelpers && (
+          <p className="rounded-2xl border border-amber-700/15 bg-amberSoft/60 px-3 py-2 text-center text-[12px] font-medium text-charcoal/80">
+            {isCloud
+              ? "עדיין אין מספיק אנשים באזור — מציגים דוגמאות כדי להראות איך זה נראה."
+              : "מציגים אנשים לדוגמה עד שיהיו יותר משתמשים באזור."}
+          </p>
+        )}
+
         {!storeReady ? (
           <FeedSkeleton cards={4} />
         ) : (
-          <div className={emptyHelpers || emptySeekers || emptyAll ? "feed-grid feed-sparse" : "feed-grid"}>
+          <div
+            className={
+              emptyHelpers || emptySeekers || emptyAll
+                ? "feed-grid feed-sparse"
+                : "feed-grid"
+            }
+          >
             {(tab === "all" || tab === "helpers") &&
-              peopleForTab.map((u) => <UserCard key={u.id} user={u} />)}
+              peopleForTab.map(({ user, example }) => (
+                <UserCard key={user.id} user={user} example={example} />
+              ))}
 
             {(tab === "all" || tab === "seekers") &&
               filteredJestas.map((j) => (
@@ -145,7 +189,7 @@ export default function NearbyPage() {
                 }
                 body={
                   emptyHelpers
-                    ? "נסו «כולם» או לכבות «רק מי שאונליין» — או הרחיבו רדיוס."
+                    ? "נסו «כולם» או לכבות «רק מי שאונליין» — או הרחיבו רדיוס. כשיצטרפו עוד אנשים, הם יופיעו כאן."
                     : "נסו להרחיב את הרדיוס — או פרסמו ג׳סטה חדשה."
                 }
                 primaryHref="/create"
