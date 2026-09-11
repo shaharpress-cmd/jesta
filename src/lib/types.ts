@@ -17,6 +17,9 @@ export interface Category {
   color: string;
 }
 
+/** Auth provider for the session user. Real Google OAuth comes later via Supabase. */
+export type AuthProvider = "google-stub" | "demo";
+
 export interface User {
   id: string;
   name: string;
@@ -35,6 +38,10 @@ export interface User {
   helpCategories: CategoryId[];
   distanceM?: number;
   lastActive?: string;
+  /** Set by stub Google sign-in or demo switch */
+  authProvider?: AuthProvider;
+  /** ISO timestamp when user accepted terms during onboarding */
+  acceptedTermsAt?: string;
 }
 
 export type Urgency = "now" | "today" | "flexible";

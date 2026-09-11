@@ -14,7 +14,7 @@ import {
   MESSAGES as SEED_MESSAGES,
   OFFERS as SEED_OFFERS,
   THREADS as SEED_THREADS,
-  USERS,
+  USERS as SEED_USERS,
 } from "./data";
 import type {
   CategoryId,
@@ -33,6 +33,11 @@ interface CreateJestaInput {
   category: CategoryId;
   locationLabel: string;
   urgency: Urgency;
+}
+
+interface CompleteOnboardingInput {
+  displayName: string;
+  acceptedTerms: boolean;
 }
 
 interface StoreState {
@@ -55,6 +60,16 @@ interface StoreState {
   getJesta: (id: string) => Jesta | undefined;
   filteredJestas: Jesta[];
   currentUser: User;
+  /**
+   * Stub Google sign-in (no OAuth keys yet).
+   * Creates/reuses session user with authProvider: 'google-stub'.
+   * Later: replace with Supabase Auth Google provider — see README.
+   */
+  signInWithGoogle: () => User;
+  /** Demo fallback — pick a seed user and mark authProvider: 'demo' */
+  signInAsDemo: (userId?: string) => User;
+  /** Optional post-login step: display name + terms acceptance */
+  completeOnboarding: (input: CompleteOnboardingInput) => User | null;
 }
 
 const StoreContext = createContext<StoreState | null>(null);
@@ -70,8 +85,33 @@ const RADIUS_METERS: Record<RadiusPreset, number | null> = {
   all: null,
 };
 
+const GOOGLE_STUB_USER_ID = "u-google";
+
+function makeGoogleStubUser(existing?: User): User {
+  return {
+    id: GOOGLE_STUB_USER_ID,
+    name: existing?.name ?? "משתמש Google",
+    avatar:
+      existing?.avatar ??
+      "https://i.pravatar.cc/150?u=google-stub",
+    rating: existing?.rating ?? 5.0,
+    ratingCount: existing?.ratingCount ?? 0,
+    verified: true,
+    online: true,
+    bio: existing?.bio,
+    tags: existing?.tags ?? ["חדש בג׳סטה"],
+    stats: existing?.stats ?? { given: 0, requested: 0, avgResponseMin: 0 },
+    helpCategories: existing?.helpCategories ?? ["neighborhood", "errands"],
+    distanceM: 0,
+    lastActive: "עכשיו",
+    authProvider: "google-stub",
+    acceptedTermsAt: existing?.acceptedTermsAt,
+  };
+}
+
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [currentUserId, setCurrentUserId] = useState(CURRENT_USER_ID);
+  const [users, setUsers] = useState<User[]>(SEED_USERS);
   const [jestas, setJestas] = useState<Jesta[]>(SEED_JESTAS);
   const [offers, setOffers] = useState<Offer[]>(SEED_OFFERS);
   const [threads, setThreads] = useState<ChatThread[]>(SEED_THREADS);
@@ -86,6 +126,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed.currentUserId) setCurrentUserId(parsed.currentUserId);
+        if (Array.isArray(parsed.users) && parsed.users.length) {
+          setUsers(parsed.users);
+        }
         if (parsed.jestas) setJestas(parsed.jestas);
         if (parsed.offers) setOffers(parsed.offers);
         if (parsed.threads) setThreads(parsed.threads);
@@ -106,6 +149,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         "jesta-store",
         JSON.stringify({
           currentUserId,
+          users,
           jestas,
           offers,
           threads,
@@ -117,17 +161,30 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     } catch {
       /* ignore */
     }
-  }, [hydrated, currentUserId, jestas, offers, threads, messages, radius, onlineOnly]);
+  }, [
+    hydrated,
+    currentUserId,
+    users,
+    jestas,
+    offers,
+    threads,
+    messages,
+    radius,
+    onlineOnly,
+  ]);
 
-  const getUser = useCallback((id: string) => USERS.find((u) => u.id === id), []);
+  const getUser = useCallback(
+    (id: string) => users.find((u) => u.id === id),
+    [users]
+  );
   const getJesta = useCallback(
     (id: string) => jestas.find((j) => j.id === id),
     [jestas]
   );
 
   const currentUser = useMemo(
-    () => USERS.find((u) => u.id === currentUserId) ?? USERS[USERS.length - 1],
-    [currentUserId]
+    () => users.find((u) => u.id === currentUserId) ?? users[users.length - 1],
+    [currentUserId, users]
   );
 
   const filteredJestas = useMemo(() => {
@@ -137,11 +194,69 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       .filter((j) => (maxM === null ? true : j.distanceM <= maxM))
       .filter((j) => {
         if (!onlineOnly) return true;
-        const author = USERS.find((u) => u.id === j.authorId);
+        const author = users.find((u) => u.id === j.authorId);
         return author?.online;
       })
       .sort((a, b) => a.distanceM - b.distanceM);
-  }, [jestas, radius, onlineOnly]);
+  }, [jestas, radius, onlineOnly, users]);
+
+  /**
+   * MVP stub — simulates Google OAuth success without real keys.
+   *
+   * Later (Supabase Google provider):
+   *   1. Enable Google in Supabase Auth → Providers
+   *   2. Add NEXT_PUBLIC_SUPABASE_URL + ANON_KEY
+   *   3. Replace this body with:
+   *        await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: ... } })
+   *   4. On auth callback, upsert profile and set session user
+   */
+  const signInWithGoogle = useCallback((): User => {
+    const existing = users.find((u) => u.id === GOOGLE_STUB_USER_ID);
+    const next = makeGoogleStubUser(existing);
+    setUsers((prev) => {
+      if (prev.some((u) => u.id === GOOGLE_STUB_USER_ID)) {
+        return prev.map((u) => (u.id === GOOGLE_STUB_USER_ID ? next : u));
+      }
+      return [...prev, next];
+    });
+    setCurrentUserId(GOOGLE_STUB_USER_ID);
+    return next;
+  }, [users]);
+
+  const signInAsDemo = useCallback(
+    (userId: string = CURRENT_USER_ID): User => {
+      const seed = SEED_USERS.find((u) => u.id === userId) ?? SEED_USERS[SEED_USERS.length - 1];
+      const demoUser: User = { ...seed, authProvider: "demo" };
+      setUsers((prev) => {
+        const idx = prev.findIndex((u) => u.id === demoUser.id);
+        if (idx >= 0) {
+          const copy = [...prev];
+          copy[idx] = { ...prev[idx], ...demoUser };
+          return copy;
+        }
+        return [...prev, demoUser];
+      });
+      setCurrentUserId(demoUser.id);
+      return demoUser;
+    },
+    []
+  );
+
+  const completeOnboarding = useCallback(
+    (input: CompleteOnboardingInput): User | null => {
+      if (!input.acceptedTerms) return null;
+      const name = input.displayName.trim() || "משתמש Google";
+      const acceptedTermsAt = new Date().toISOString();
+      const base = users.find((u) => u.id === currentUserId);
+      if (!base) return null;
+      const updated: User = { ...base, name, acceptedTermsAt };
+      setUsers((prev) =>
+        prev.map((u) => (u.id === currentUserId ? updated : u))
+      );
+      return updated;
+    },
+    [currentUserId, users]
+  );
 
   const createJesta = useCallback(
     (input: CreateJestaInput): Jesta => {
@@ -249,7 +364,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     messages,
     radius,
     onlineOnly,
-    users: USERS,
+    users,
     setCurrentUserId,
     setRadius,
     setOnlineOnly,
@@ -261,6 +376,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     getJesta,
     filteredJestas,
     currentUser,
+    signInWithGoogle,
+    signInAsDemo,
+    completeOnboarding,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

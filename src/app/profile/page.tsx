@@ -31,8 +31,7 @@ const TAG_STYLES = [
 
 function ProfileInner() {
   const params = useSearchParams();
-  const { currentUser, getUser, users, setCurrentUserId, currentUserId } =
-    useStore();
+  const { currentUser, getUser, currentUserId } = useStore();
   const uid = params.get("u");
   const user = uid ? getUser(uid) ?? currentUser : currentUser;
   const isMe = user.id === currentUserId;
@@ -220,32 +219,20 @@ function ProfileInner() {
           <section className="card-soft p-4 space-y-3">
             <h2 className="flex items-center gap-2 font-bold text-charcoal">
               <LogIn className="h-4 w-4 text-coral" />
-              החלף משתמש דמו
+              חשבון
             </h2>
             <p className="text-xs text-charcoal-muted">
-              Mock auth — בהמשך יוחלף ב-Supabase Auth
+              {currentUser.authProvider === "google-stub"
+                ? "מחובר דרך Google (סימולציה)"
+                : currentUser.authProvider === "demo"
+                  ? "מצב דמו"
+                  : "התחברות עם Google · מצב דמו זמין לבדיקות"}
             </p>
-            <div className="flex flex-wrap gap-2">
-              {users.map((u) => (
-                <button
-                  key={u.id}
-                  type="button"
-                  onClick={() => setCurrentUserId(u.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium border ${
-                    u.id === currentUserId
-                      ? "bg-coral text-white border-coral"
-                      : "bg-cream border-charcoal/10 text-charcoal"
-                  }`}
-                >
-                  {u.name}
-                </button>
-              ))}
-            </div>
             <Link
               href="/login"
-              className="block text-center text-sm text-coral font-medium pt-1"
+              className="cta-coral !py-3 text-sm"
             >
-              מסך התחברות דמו ←
+              התחברות / החלפת חשבון
             </Link>
           </section>
         )}
