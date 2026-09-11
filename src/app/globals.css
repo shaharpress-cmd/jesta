@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #f7f1ea;
+  --coral: #e07a5f;
+  --charcoal: #3d405b;
+}
+
+html {
+  direction: rtl;
+}
+
+body {
+  background: #e8e0d6;
+  color: var(--charcoal);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Soft amber safety tip */
+.safety-amber {
+  background: #f8efd9;
+  border: 1px solid rgba(212, 165, 116, 0.25);
+}
+
+/* PWA install feel */
+@media (display-mode: standalone) {
+  body {
+    user-select: none;
+  }
+}
