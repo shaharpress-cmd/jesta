@@ -47,13 +47,13 @@ export function GuestIntroCard() {
       <button
         type="button"
         onClick={dismiss}
-        className="absolute top-3 start-3 flex h-10 w-10 items-center justify-center rounded-full text-charcoal-light hover:bg-cream-deep hover:text-charcoal transition touch-manipulation"
+        className="absolute top-3 end-3 flex h-10 w-10 items-center justify-center rounded-full text-charcoal-light hover:bg-cream-deep hover:text-charcoal transition touch-manipulation"
         aria-label="סגור היכרות"
       >
         <X className="h-4 w-4" />
       </button>
 
-      <div className="pe-8 space-y-3">
+      <div className="ps-8 space-y-3">
         <p className="text-[15px] sm:text-base font-semibold text-charcoal leading-relaxed">
           ג׳סטה מחברת שכנים לעזרה לפי מיקום — בחינם, בלי תשלומים באפליקציה, וניתן
           להתקין כ־PWA.
