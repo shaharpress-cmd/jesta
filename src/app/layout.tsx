@@ -54,8 +54,7 @@ export const viewport: Viewport = {
   themeColor: "#E07A5F",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -65,10 +64,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl" className={heebo.variable}>
-      <body className="font-heebo bg-cream-deep text-charcoal antialiased">
+      <body className="font-heebo bg-cream-deep text-charcoal antialiased text-[15px] sm:text-base">
         <StoreProvider>
-          <div className="mx-auto min-h-dvh max-w-md bg-cream relative sm:shadow-card">
-            <main className="pb-28">{children}</main>
+          <div className="app-shell relative mx-auto min-h-dvh w-full bg-cream sm:shadow-card">
+            <main className="pb-[calc(7rem+env(safe-area-inset-bottom))]">{children}</main>
             <BottomNav />
           </div>
           <ServiceWorkerRegister />

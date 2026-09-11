@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/nearby", "/טיפים", "/create"],
+      allow: ["/", "/about", "/nearby", "/טיפים", "/create"],
       disallow: ["/login", "/chat", "/messages", "/api/", "/auth/", "/profile"],
     },
     sitemap: `${base}/sitemap.xml`,

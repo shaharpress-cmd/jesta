@@ -32,7 +32,7 @@ export default function TipsHubPage() {
     <div>
       <Header title="טיפים" showBack backHref="/" showBell={false} showMenu={false} />
 
-      <div className="px-4 space-y-5 pb-8">
+      <div className="page-pad space-y-5 pb-8 max-w-3xl mx-auto">
         <section className="space-y-2">
           <h1 className="text-2xl font-black text-charcoal leading-snug">
             {TIPS_HUB.h1}

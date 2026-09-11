@@ -67,6 +67,8 @@ interface StoreState {
   /** True when Supabase session is active and data is cloud-backed */
   isCloud: boolean;
   cloudReady: boolean;
+  /** True after intentional Google / demo / stub sign-in (not bare seed user). */
+  isLoggedIn: boolean;
   setCurrentUserId: (id: string) => void;
   setRadius: (r: RadiusPreset) => void;
   setOnlineOnly: (v: boolean) => void;
@@ -773,6 +775,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [currentUserId, isCloud]
   );
 
+  const isLoggedIn = Boolean(
+    isCloud ||
+      currentUser.authProvider === "google" ||
+      currentUser.authProvider === "google-stub" ||
+      currentUser.authProvider === "demo"
+  );
+
   const value: StoreState = {
     currentUserId,
     jestas,
@@ -784,6 +793,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     users,
     isCloud,
     cloudReady,
+    isLoggedIn,
     setCurrentUserId,
     setRadius,
     setOnlineOnly,

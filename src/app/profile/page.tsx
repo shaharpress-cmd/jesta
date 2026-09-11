@@ -61,7 +61,7 @@ function ProfileInner() {
     <div>
       <Header showBack={!isMe} backHref="/" />
 
-      <div className="px-4 space-y-5 pb-8">
+      <div className="page-pad space-y-5 pb-8 max-w-2xl mx-auto">
         {/* Profile header */}
         <div className="flex items-start gap-4">
           <div className="relative">

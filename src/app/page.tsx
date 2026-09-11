@@ -8,6 +8,7 @@ import { CategoryPills } from "@/components/CategoryPills";
 import { JestaCard } from "@/components/JestaCard";
 import { RadiusFilter } from "@/components/RadiusFilter";
 import { SafetyBanner } from "@/components/SafetyBanner";
+import { GuestIntroCard } from "@/components/GuestIntroCard";
 import { useStore } from "@/lib/store";
 import type { CategoryId } from "@/lib/types";
 
@@ -42,9 +43,11 @@ export default function HomePage() {
         }}
       />
 
-      <div className="px-4 space-y-4">
+      <div className="page-pad space-y-4">
+        <GuestIntroCard />
+
         {(searchOpen || query) && (
-          <div className="relative">
+          <div className="relative max-w-xl">
             <Search className="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-charcoal-light" />
             <input
               ref={searchRef}
@@ -67,9 +70,9 @@ export default function HomePage() {
           compact
         />
 
-        <div className="space-y-4 pt-1">
+        <div className="feed-grid pt-1">
           {list.length === 0 ? (
-            <div className="card-soft p-8 text-center">
+            <div className="card-soft p-8 text-center sm:col-span-2">
               <p className="text-4xl mb-2">🤝</p>
               <p className="font-medium text-charcoal">אין ג׳סטות בטווח הזה</p>
               <p className="text-sm text-charcoal-muted mt-1">
@@ -86,7 +89,7 @@ export default function HomePage() {
         <div className="flex justify-center pt-2">
           <Link
             href="/טיפים"
-            className="inline-flex items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-charcoal/[0.08] bg-white px-4 py-2 text-sm font-semibold text-coral shadow-sm touch-manipulation"
           >
             טיפים
             <span className="text-charcoal-light font-medium">· מדריכים לשכנים</span>

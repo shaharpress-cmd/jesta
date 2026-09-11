@@ -76,7 +76,7 @@ export default function TipPage({ params }: Props) {
         showMenu={false}
       />
 
-      <article className="px-4 space-y-6 pb-10">
+      <article className="page-pad space-y-6 pb-10 max-w-3xl mx-auto">
         <header className="space-y-3">
           <div className="flex items-center gap-2 text-sm text-charcoal-muted">
             <span aria-hidden className="text-lg">

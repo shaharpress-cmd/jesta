@@ -44,9 +44,9 @@ export default function NearbyPage() {
 
   return (
     <div>
-      <Header subtitle="לידך עכשיו" location='תל אביב · 2 ק״מ' />
+      <Header subtitle="לידך עכשיו" location='תל אביב · 2 ק״מ' showMenu />
 
-      <div className="px-4 space-y-4">
+      <div className="page-pad space-y-4">
         <RadiusFilter value={radius} onChange={setRadius} />
 
         <div className="relative">
@@ -92,7 +92,7 @@ export default function NearbyPage() {
           ))}
         </div>
 
-        <div className="space-y-3.5">
+        <div className="feed-grid">
           {(tab === "all" || tab === "helpers") &&
             nearbyUsers.map((u) => <UserCard key={u.id} user={u} />)}
 

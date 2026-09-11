@@ -39,6 +39,7 @@ npm start
 | Route | Screen |
 |-------|--------|
 | `/` | Home feed (categories + radius + search) |
+| `/about` | מה זה ג׳סטה — what/how/safety + login CTA |
 | `/nearby` | Map + radius presets + online filter + people/jestas |
 | `/create` | Create jesta |
 | `/jesta/[id]` | Detail, offer help, report |

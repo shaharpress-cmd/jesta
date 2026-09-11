@@ -26,7 +26,7 @@ export default function MessagesPage() {
     <div>
       <Header title="הודעות" showBell={false} />
 
-      <div className="px-4 space-y-2.5">
+      <div className="page-pad space-y-2.5 max-w-2xl mx-auto">
         {sorted.length === 0 ? (
           <div className="card-soft p-10 text-center mt-4">
             <p className="text-4xl mb-2">💬</p>
